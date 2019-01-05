@@ -81,6 +81,36 @@
       <delete file="${replay-app.name}.dmg" quiet="yes" failonerror="false"/>
   </target>
 
+<target name="dist-nodoc.zip" depends="timer-jar, generated"
+          description="Build OS-neutral zip-file distribution with no docs">
+      <zip destfile="../DerbyNet-${release-series}-${git-rev-count}${git-dirty}-${DSTAMP}.zip">
+          <fileset dir=".">
+              <include name="MIT-LICENSE.txt"/>
+              <include name="README.txt"/>
+          </fileset>
+
+          <mappedresources>
+              <fileset dir=".">
+                  <include name="website/**/*"/>
+                  <exclude name="website/local/**"/>
+              </fileset>
+              <!-- TODO name change to derbynet -->
+              <globmapper from="website/*" to="racemgr/*"/>
+          </mappedresources>
+
+          <fileset dir="${timer-jar-dir}">
+              <include name="*.jar"/>
+          </fileset>
+
+          <fileset dir=".">
+              <include name="lib/jSSC*src.jar"/>
+              <include name="extras/**/*"/>
+          </fileset>
+      </zip>
+
+      <delete file="${replay-app.name}.dmg" quiet="yes" failonerror="false"/>
+  </target>
+
   <target name="generated" depends="banner, generated-version.inc,
 				    generated-build-date.inc,
 				    release-series, generated-commit-hash.inc"
