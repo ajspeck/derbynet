@@ -85,6 +85,8 @@ RUN mv /tmp/derbynet/derby-timer.jar /usr/bin/
 COPY ./docker/location.snippet /etc/nginx/derbynet/location.snippet
 COPY ./docker/index.html /var/www/html/index.html
 COPY ./docker/derbynet.conf /etc/derbynet.conf
+COPY ./docker/timer-start.sh /timer-start.sh
+RUN chmod +x /timer-start.sh
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log
 	
