@@ -32,7 +32,9 @@ public class SmartLineDevice extends TimerDeviceCommon implements TimerDevice {
   private static final String READ_RESET_SWITCH = "rr\r";
   private static final String READ_START_SWITCH = "rs\r";
   private static final String READ_VERSION = "v\r";
-
+  private static final String READ_PHOTO_DELAY = "of\r";
+  private static final String READ_PHOTO_WIDTH = "ow\r";
+  
   public SmartLineDevice(SerialPortWrapper portWrapper) {
     super(portWrapper, new GateWatcher(portWrapper) {
         @Override
@@ -110,7 +112,12 @@ public class SmartLineDevice extends TimerDeviceCommon implements TimerDevice {
         portWrapper.logWriter().serialPortLogInternal("START_SWITCH = "
             + portWrapper.writeAndWaitForResponse(READ_START_SWITCH, 500)
         );
-
+        portWrapper.logWriter().serialPortLogInternal("PHOTO_DELAY = "
+            + portWrapper.writeAndWaitForResponse(READ_PHOTO_DELAY, 500)
+        );
+        portWrapper.logWriter().serialPortLogInternal("PHOTO_WIDTH = "
+            + portWrapper.writeAndWaitForResponse(READ_PHOTO_WIDTH, 500)
+        );
         portWrapper.writeAndDrainResponse(SET_LANE_CHARACTER_A, 1, 500);
         portWrapper.writeAndDrainResponse(SET_PLACE_CHARACTER_BANG, 1, 500);
 
