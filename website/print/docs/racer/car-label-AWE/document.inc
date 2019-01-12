@@ -20,7 +20,7 @@ class CarLabelAWE extends PrintableRacerDocument {
     $this->initialize_layout(0.5, 0.5);
     $this->layout->SetHorizontalGap(0.300);
     $this->layout->SetTopMargin(0.140);
-
+    $this->layout->SetLeftMargin(0.48);
     $this->nskip = $this->get_option('skip');
     $this->draw_outline = $this->get_option('outline');
   }
@@ -42,7 +42,7 @@ class CarLabelAWE extends PrintableRacerDocument {
     }
 
     if ($this->draw_outline) {
-      $this->pdf->Circular($left+0.5/2, $top+0.5/2, 0.25);
+      $this->pdf->Circle($left+0.5/2, $top+0.5/2, 0.25);
     }
     
     $cx = $left + 0.5/2;
