@@ -7,6 +7,7 @@ require_once('fpdf/fpdf.php');
 require_once('fpdf/ext/transform.php');  // PDF_Transform
 require_once('fpdf/ext/alphapdf.php');  // PDF_Alpha
 require_once('fpdf/ext/rounded_rect.php');  // PDF_RoundedRect
+require_once('fpdf/ext/ellipse.php');  // PDF_Ellipse
 require_once('fpdf/ext/rpdf.php');  // PDF_TextDirection
 require_once('fpdf/ext/circulartext.php');  // PDF_CircularText
 require_once('fpdf/ext/gradients.php');  // PDF_Gradients
