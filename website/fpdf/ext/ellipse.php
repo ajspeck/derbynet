@@ -1,6 +1,5 @@
 <?php
 // From http://www.fpdf.org/en/script/script6.php
-require('fpdf.php');
 
 class PDF_Ellipse extends FPDF
 {
