@@ -1,7 +1,7 @@
 <?php
 // From http://www.fpdf.org/en/script/script6.php
 
-class PDF_Ellipse extends FPDF
+class PDF_Ellipse extends PDF_RotationAndCentering
 {
 function Circle($x, $y, $r, $style='D')
 {
