@@ -44,6 +44,10 @@ if (!is_subclass_of(document_class(), 'PrintableRacerDocument')) {
   if (isset($_GET['options'])) {
     $doc->set_options(json_decode($_GET['options'], true));
   }
+  $sort = '';
+  if (isset($_GET['sort'])) {
+    $sort=$_GET['sort'];
+  }
 
   $doc->StartDocument();
 
@@ -98,8 +102,11 @@ if (!is_subclass_of(document_class(), 'PrintableRacerDocument')) {
     } else if (isset($_GET['where'])) {
       $sql = $sql.' WHERE '.$_GET['where'];
     }
-    $sql = $sql.' ORDER BY lastname, firstname, carnumber';
-
+    if ($sort == "car") {
+       $sql = $sql.' ORDER BY carnumber, lastname, firstname';
+    } else {
+       $sql = $sql.' ORDER BY lastname, firstname, carnumber';
+    }
     foreach ($db->query($sql) as $racer) {
       convert_strings($racer);
 
