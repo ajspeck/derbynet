@@ -18,7 +18,7 @@ class CarLabelAWE extends PrintableRacerDocument {
   function StartDocument() {
     $this->initialize_pdf('P', 'in', 'Letter');
     $this->initialize_layout(0.5, 0.5);
-    $this->layout->SetRawLayoutParameters(0.45, 0.48, 0.3, 0.1, 12, 204);
+    $this->layout->SetRawLayoutParameters(0.45, 0.48, 0.14, 0.1, 12, 204);
     $this->nskip = $this->get_option('skip');
     $this->draw_outline = $this->get_option('outline');
   }
@@ -45,7 +45,7 @@ class CarLabelAWE extends PrintableRacerDocument {
     
     $cx = $left + 0.5/2;
 
-    $this->pdf->CenteredSequence($cx, $top + 0.2,
+    $this->pdf->CenteredSequence($cx, $top + 0.3,
                                  array(new SetFontTag('Helvetica', 'B', 16), $racer['carnumber']));
 
   }

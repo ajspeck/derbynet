@@ -106,7 +106,7 @@ class DocumentLayout {
     $this->top_margin = $top;
     $this->left_margin = $left;
     $this->alloc_height = $this->doc_height + $verticalgap;
-    $this->alloc_height = $this->doc_width + $horizontalgap;
+    $this->alloc_width = $this->doc_width + $horizontalgap;
     $this->n_up = $n_per_page;
     $this->n_per_row=$n_per_row;
   }
