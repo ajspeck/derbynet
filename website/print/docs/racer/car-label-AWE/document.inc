@@ -18,10 +18,7 @@ class CarLabelAWE extends PrintableRacerDocument {
   function StartDocument() {
     $this->initialize_pdf('P', 'in', 'Letter');
     $this->initialize_layout(0.5, 0.5);
-    $this->layout->SetHorizontalGap(0.300);
-    $this->layout->SetVerticalGap(0.100);
-    $this->layout->SetTopMargin(0.450);
-    $this->layout->SetLeftMargin(0.480);
+    $this->layout->SetRawLayoutParameters(0.45, 0.48, 0.3, 0.1, 12, 204);
     $this->nskip = $this->get_option('skip');
     $this->draw_outline = $this->get_option('outline');
   }
