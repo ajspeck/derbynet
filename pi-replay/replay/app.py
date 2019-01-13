@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 from flask import Flask, render_template, Response
 import picamera
-from camera_pi import Camera
+from base_camera import BaseCamera
 
-my_cam = picamera.PiCamera(
+camera = picamera.PiCamera(
             resolution=(640, 480),
             framerate=60.0,
         )
@@ -29,7 +29,7 @@ def gen(camera):
 @app.route('/video_feed')
 def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
-    return Response(gen(Camera(my_cam)),
+    return Response(gen(BaseCamera(camera)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
