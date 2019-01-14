@@ -44,10 +44,10 @@ if ($_POST['status'] == REPLAY_REPORTED_PLAYING &&
 write_raceinfo('replay_last_contact', time());
 write_raceinfo('replay_just_finished', 
                (isset($_POST['finished-replay']) && $_POST['finished-replay']) ? 1 : 0);
-if isset($_POST['replay-url']){
-  write_raceinfo('replay_video_url',$_POST['replay-url'])
+if (!empty($_POST["replay-url"])) {
+  write_raceinfo('replay_video_url',$_POST['replay-url']);
 } else {
-  write_raceinfo('replay_video_url','')
+  write_raceinfo('replay_video_url','');
 }
 echo "<success/>\n";
 drain_queue();

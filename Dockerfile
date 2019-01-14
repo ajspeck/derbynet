@@ -52,7 +52,9 @@ RUN	mkdir -p /var/www/html && chown -R www-data:www-data /var/www
 RUN sed -i -e 's/error_log = \/var\/log\/php7.0-fpm.log/error_log = \/proc\/self\/fd\/2/g' /etc/php/7.0/fpm/php-fpm.conf && \
 	sed -i -e 's/;daemonize = yes/daemonize = no/g' /etc/php/7.0/fpm/php-fpm.conf && \
 	sed -i -e 's/;access.log = log\/$pool.access.log/access.log = \/proc\/self\/fd\/2/g' /etc/php/7.0/fpm/pool.d/www.conf && \
+        sed -i -e 's/;php_admin_value[error_log] = \/var\/log\/fpm-php.www.log/php_admin_value[error_log] = \/proc\/self\/fd\/2/g' /etc/php/7.0/fpm/pool.d/www.conf && \
 	sed -i -e 's/;catch_workers_output = yes/catch_workers_output = yes/g' /etc/php/7.0/fpm/pool.d/www.conf && \
+        sed -i -e 's/;php_admin_flag[log_errors] = on/php_admin_flag[log_errors] = on/g' /etc/php/7.0/fpm/pool.d/www.conf && \
 	sed -i -e 's/;clear_env = no/clear_env = no/g' /etc/php/7.0/fpm/pool.d/www.conf && \
 	sed -i -e 's/listen = \/run\/php\/php7.0-fpm.sock/listen = [::]:9000/g' /etc/php/7.0/fpm/pool.d/www.conf && \
 	mkdir -p /run/php
@@ -93,8 +95,6 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 RUN sed -i "s/worker_processes auto;/worker_processes 1;/g" /etc/nginx/nginx.conf
 RUN mkdir -m 777 /var/lib/derbynet
 RUN chown www-data.www-data /var/lib/derbynet
-RUN ls -l /var/www/html/
-RUN ls -l /var/www/html/derbynet/
 RUN mkdir -m 777 /var/www/html/derbynet/local
 COPY ./docker/default-file-path.inc /var/www/html/derbynet/local/default-file-path.inc
 RUN sed -i -e '/^[ \t]*location \/ {/ i\ include derbynet/location.snippet;' /etc/nginx/sites-available/default
