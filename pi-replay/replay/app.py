@@ -4,12 +4,13 @@ import picamera
 from base_camera import BaseCamera
 import requests
 import time
-import xml.etree.ElementTree as ET 
+import xml.etree.ElementTree as ET
 import datetime
 import queue
 import collections
 import os
 import threading
+import logging
 
 qCmd = queue.Queue()
 qResp = queue.Queue()
@@ -18,7 +19,8 @@ ReplayData = collections.namedtuple('ReplayData', ['CMD', 'DATA'])
 def replay_response_thread(qCmd,qResp,ReplayData):
     s = requests.Session()
     replayURL=''
-    for i in range(10):
+    while True:
+        print('Posting',flush=True)
         r = s.post('https://derby.speckfamily.org/derbynet/action.php', data = {'action':'replay-message',
                                                                                   'status':'1',
                                                                                    'finished-replay':'0',
@@ -49,6 +51,7 @@ def camera_thread(qCmd,qResp,ReplayData,camera):
     fName='test.h264' #Initial file
     try:
         while True:
+            print('camera',flush=True)
             camera.wait_recording(0)
             try:
                 cmd=qCmd.get(timeout=1.0)
@@ -65,14 +68,14 @@ def camera_thread(qCmd,qResp,ReplayData,camera):
                 pass
     finally:
         camera.stop_recording()
-        
+
 camera = picamera.PiCamera(
             resolution=(640, 480),
             framerate=60.0,
         )
 
-
 app = Flask(__name__)
+
 
 
 @app.route('/')
@@ -95,16 +98,21 @@ def video_feed():
     return Response(gen(BaseCamera(camera)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
+print('starting-initial',flush=True)
+print('starting',flush=True)
+gunicorn_logger = logging.getLogger('gunicorn.error')
+app.logger.handlers = gunicorn_logger.handlers
+app.logger.setLevel(gunicorn_logger.level)
 
-if __name__ == '__main__':
-    ct=threading.Thread(target=camera_thread,kwargs={'qCmd':qCmd,
+ct=threading.Thread(target=camera_thread,kwargs={'qCmd':qCmd,
                                                   'qResp':qResp,
                                                   'ReplayData':ReplayData,
                                                   'camera':camera})
-    rt=threading.Thread(target=camera_thread,kwargs={'qCmd':qCmd,
+rt=threading.Thread(target=replay_response_thread,kwargs={'qCmd':qCmd,
                                                   'qResp':qResp,
                                                   'ReplayData':ReplayData})
-    rt.start()
-    ct.start()
-    
+rt.start()
+ct.start()
+
+if __name__ == '__main__':
     app.run(host='0.0.0.0', threaded=True)
