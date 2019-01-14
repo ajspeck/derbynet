@@ -1,4 +1,5 @@
 import time
+import io
 import threading
 try:
     from greenlet import getcurrent as get_ident
@@ -57,13 +58,15 @@ class BaseCamera(object):
     last_access = 0  # time of last client access to the camera
     event = CameraEvent()
 
-    def __init__(self):
+    def __init__(self, camera):
         """Start the background camera thread if it isn't running yet."""
+        self._cam = camera
         if BaseCamera.thread is None:
             BaseCamera.last_access = time.time()
 
             # start background frame thread
-            BaseCamera.thread = threading.Thread(target=self._thread)
+            BaseCamera.thread = threading.Thread(target=self._thread, 
+                                                 kwargs={'camera':self._cam})
             BaseCamera.thread.start()
 
             # wait until frames are available
@@ -81,15 +84,27 @@ class BaseCamera(object):
         return BaseCamera.frame
 
     @staticmethod
-    def frames():
-        """"Generator that returns frames from the camera."""
-        raise RuntimeError('Must be implemented by subclasses.')
+    def frames(camera):
+        # let camera warm up
+        time.sleep(2)
+
+        stream = io.BytesIO()
+        for _ in camera.capture_continuous(stream, 'jpeg',
+                                             use_video_port=True):
+            # return current frame
+            stream.seek(0)
+            yield stream.read()
+
+            # reset stream for next frame
+            stream.seek(0)
+            stream.truncate()
+
 
     @classmethod
-    def _thread(cls):
+    def _thread(cls,camera):
         """Camera background thread."""
         print('Starting camera thread.')
-        frames_iterator = cls.frames()
+        frames_iterator = cls.frames(camera)
         for frame in frames_iterator:
             BaseCamera.frame = frame
             BaseCamera.event.set()  # send signal to clients
