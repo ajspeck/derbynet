@@ -20,23 +20,26 @@ def replay_response_thread(qCmd,qResp,ReplayData):
     s = requests.Session()
     replayURL=''
     while True:
-        print('Posting',flush=True)
-        r = s.post('https://derby.speckfamily.org/derbynet/action.php', data = {'action':'replay-message',
+#        print('Posting',flush=True)
+        try:
+            r = s.post('https://derby.speckfamily.org/derbynet/action.php', data = {'action':'replay-message',
                                                                                   'status':'1',
                                                                                    'finished-replay':'0',
                                                                                    'replay-url':replayURL
-                                                                                  })
-        xml=ET.fromstring(r.content)
-        for c in xml.getchildren():
-            if c.tag == 'replay-message':
-                parts = c.text.split(' ')
-                print(parts)
-                if parts[0]=='START':
-                    recName='{0}-{1}.h264'.format(parts[1],datetime.datetime.now().strftime("%y%m%d_%H%M%S"))
-                    qCmd.put(ReplayData('START',recName))
-                elif parts[0]=='REPLAY':
-                    skipBack=float(parts[1])
-                    qCmd.put(ReplayData('REPLAY',skipBack))
+                                                                                  }, timeout=5.0)
+            xml=ET.fromstring(r.content)
+            for c in xml.getchildren():
+                if c.tag == 'replay-message':
+                    parts = c.text.split(' ')
+                    print(parts)
+                    if parts[0]=='START':
+                        recName='{0}-{1}.h264'.format(parts[1],datetime.datetime.now().strftime("%y%m%d_%H%M%S"))
+                        qCmd.put(ReplayData('START',recName))
+                    elif parts[0]=='REPLAY':
+                        skipBack=float(parts[1])
+                        qCmd.put(ReplayData('REPLAY',skipBack))
+        except:
+            pass
         try:
             resp=qResp.get(timeout=0.1)
             if resp.CMD=='REPLAY-URL':
@@ -51,7 +54,7 @@ def camera_thread(qCmd,qResp,ReplayData,camera):
     fName='test.h264' #Initial file
     try:
         while True:
-            print('camera',flush=True)
+#            print('camera',flush=True)
             camera.wait_recording(0)
             try:
                 cmd=qCmd.get(timeout=1.0)
