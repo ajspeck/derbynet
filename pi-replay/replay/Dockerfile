@@ -4,6 +4,7 @@ RUN apt-get update \
     && apt-get install -y \
            libraspberrypi0 \
            libraspberrypi-bin \
+           gpac \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install -r /app/requirements-pi.txt --no-cache-dir
