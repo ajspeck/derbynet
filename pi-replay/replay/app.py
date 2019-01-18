@@ -11,10 +11,12 @@ import collections
 import os
 import threading
 import logging
+import subprocess
 
 qCmd = queue.Queue()
 qResp = queue.Queue()
 ReplayData = collections.namedtuple('ReplayData', ['CMD', 'DATA'])
+fps=60
 
 def replay_response_thread(qCmd,qResp,ReplayData):
     s = requests.Session()
@@ -65,8 +67,16 @@ def camera_thread(qCmd,qResp,ReplayData,camera):
                     # Keep recording for 2 seconds and only then write the
                     # stream to disk
                     camera.wait_recording(2)
-                    stream.copy_to(os.path.join('/videos/',fName))
-                    url='https://finish.speckfamily.org/videos/{0}'.format(fName)
+                    fName=os.path.join('/videos/',fName)
+                    stream.copy_to(fName)
+                    mp4fName = '{0}.mp4'.format(os.path.splitext(fName)[0])
+                    command = "/usr/bin/MP4Box -add '{1}' -fps {0} '{2}'".format(fps,fName,mp4fName)
+                    try:
+                        output = subprocess.check_output(command, stderr=subprocess.STDOUT,shell=True)
+                        os.remove(fName)
+                    except subprocess.CalledProcessError as e:
+                        print('FAIL:\ncmd:{}\noutput:{}'.format(e.cmd, e.output),flush=True)
+                    url='https://finish.speckfamily.org/videos/{0}'.format(os.path.split(mp4fName)[-1])
                     qResp.put(ReplayData('REPLAY-URL',url))
             except queue.Empty:
                 pass
@@ -75,7 +85,7 @@ def camera_thread(qCmd,qResp,ReplayData,camera):
 
 camera = picamera.PiCamera(
             resolution=(640, 480),
-            framerate=60.0,
+            framerate=fps,
         )
 
 app = Flask(__name__)
