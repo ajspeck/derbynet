@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from flask import Flask, render_template, Response
 import picamera
+from replayCircularIO import BoundedPiCameraCircularIO
 from base_camera import BaseCamera
 import requests
 import time
@@ -22,8 +23,8 @@ def replay_response_thread(qCmd,qResp,ReplayData):
     s = requests.Session()
     replayURL=''
     while True:
-        #print('Posting',flush=True)
         try:
+            #print('Request')
             r = s.post('https://derby.speckfamily.org/derbynet/action.php', data = {'action':'replay-message',
                                                                                   'status':'1',
                                                                                    'finished-replay':'0',
@@ -33,7 +34,7 @@ def replay_response_thread(qCmd,qResp,ReplayData):
             for c in xml.getchildren():
                 if c.tag == 'replay-message':
                     parts = c.text.split(' ')
-                    print(parts, flush=True)
+                    print(parts)
                     if parts[0]=='START':
                         recName='{0}-{1}.h264'.format(parts[1],datetime.datetime.now().strftime("%y%m%d_%H%M%S"))
                         qCmd.put(ReplayData('START',recName))
@@ -50,13 +51,15 @@ def replay_response_thread(qCmd,qResp,ReplayData):
         except queue.Empty:
             pass
 def camera_thread(qCmd,qResp,ReplayData,camera):
-    stream = picamera.PiCameraCircularIO(camera, seconds=10)
-    camera.start_recording(stream, format='h264')
+    print('Camera Thread Started')
+    stream = BoundedPiCameraCircularIO(camera, seconds=10)
+    camera.start_recording(stream, format='h264', intra_period=1)
     time.sleep(2) #wait for camera to warm up
     fName='test.h264' #Initial file
+    print('Camera Loop Started')
     try:
         while True:
-            #print('camera',flush=True)
+            #print('Camera Loop')
             camera.wait_recording(0)
             try:
                 cmd=qCmd.get(timeout=1.0)
@@ -66,9 +69,16 @@ def camera_thread(qCmd,qResp,ReplayData,camera):
                 elif cmd.CMD=='REPLAY':
                     # Keep recording for 2 seconds and only then write the
                     # stream to disk
-                    camera.wait_recording(2)
+                    now = camera.timestamp
+                    tsStart = now-1e6*float(cmd.DATA)
+                    postTriggerSec=1.0
+                    tsEnd = now+1e6*postTriggerSec
+                    print('start timestamp: {0}'.format(tsStart))
+                    print('end timestamp: {0}'.format(tsEnd))
+                    camera.wait_recording(1.5)
                     fName=os.path.join('/videos/',fName)
-                    stream.copy_to(fName)
+                    first,last = stream.copy_to_bounded(fName,tsStart,tsEnd)
+                    print('TS: {0}, {1}'.format(first.timestamp,last.timestamp))
                     mp4fName = '{0}.mp4'.format(os.path.splitext(fName)[0])
                     command = "/usr/bin/MP4Box -add '{1}' -fps {0} '{2}'".format(fps,fName,mp4fName)
                     try:
@@ -86,13 +96,14 @@ def camera_thread(qCmd,qResp,ReplayData,camera):
 camera = picamera.PiCamera(
             resolution=(640, 480),
             framerate=fps,
+            clock_mode='raw'
         )
 
 app = Flask(__name__)
 
 
 
-@app.route('/')
+@app.route('/preview')
 def index():
     """Video streaming home page."""
     return render_template('index.html')
@@ -112,8 +123,6 @@ def video_feed():
     return Response(gen(BaseCamera(camera)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-print('starting-initial',flush=True)
-print('starting',flush=True)
 gunicorn_logger = logging.getLogger('gunicorn.error')
 app.logger.handlers = gunicorn_logger.handlers
 app.logger.setLevel(gunicorn_logger.level)
