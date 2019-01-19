@@ -280,7 +280,7 @@ var Poller = {
 
       if (photo_cells.length > 0) {
         // Position of the first td.photo may get adjusted
-        row_height = Math.floor(($(window).height() - photo_cells.position().top) / photo_cells.length) - border;
+        row_height = Math.floor(($(window).height()/2 - photo_cells.position().top) / photo_cells.length) - border;
       }
 
       this.time_of_last_request = (new Date()).valueOf();
