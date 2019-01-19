@@ -1,0 +1,39 @@
+builds:
+  derbynet:
+    context: /
+    dockerfile: Dockerfile
+    pushes:
+      - 'always=ajspeck/derbynet:{fcommitid}'
+      - 'on_tag=ajspeck/derbynet:{git_tag}'
+      - 'on_branch:master=ajspeck/derbynet:latest'
+      - 'on_branch:pi-docker=ajspeck/derbynet:pidocker'
+    labels:
+      - 'com.dockermake.git.commitid={fcommitid}'
+    dockerignore:
+      - .git
+      - .docker-make.yml
+  pireplay:
+    context: /pi-replay/replay
+    dockerfile: Dockerfile
+    pushes:
+      - 'always=ajspeck/pireplay:{fcommitid}'
+      - 'on_tag=ajspeck/pireplay:{git_tag}'
+      - 'on_branch:master=ajspeck/pireplay:latest'
+      - 'on_branch:pi-docker=ajspeck/pireplay:pidocker'
+    labels:
+      - 'com.dockermake.git.commitid={fcommitid}'
+    dockerignore:
+      - .git
+  nginx-autoindex:
+    context: /pi-replay/nginx-autoindex
+    dockerfile: Dockerfile
+    pushes:
+      - 'always=ajspeck/nginx-autoindex:{fcommitid}'
+      - 'on_tag=ajspeck/nginx-autoindex:{git_tag}'
+      - 'on_branch:master=ajspeck/nginx-autoindex:latest'
+      - 'on_branch:pi-docker=ajspeck/nginx-autoindex:pidocker'
+    labels:
+      - 'com.dockermake.git.commitid={fcommitid}'
+    dockerignore:
+      - .git
+
