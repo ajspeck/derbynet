@@ -74,5 +74,7 @@ if (read_raceinfo('replay_just_finished')) {
 } else if (replay_playing()) {
   echo "<hold-current-screen/>\n";
 }
+echo '<replay url="'.read_raceinfo('replay-url','').'"';
+echo ' rate='.read_raceinfo('replay-rate', '0.5').'>';
 ?>
 </now-racing>
