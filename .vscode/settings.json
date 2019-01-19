@@ -1,5 +1,6 @@
 {
     "files.associations":{
-        "*.inc": "php"
+        "*.inc": "php",
+        "*.kiosk": "php"
     }
 }
