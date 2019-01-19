@@ -24,7 +24,7 @@ def replay_response_thread(qCmd,qResp,ReplayData):
     replayURL=''
     while True:
         try:
-            #print('Request')
+            print('Request')
             r = s.post('https://derby.speckfamily.org/derbynet/action.php', data = {'action':'replay-message',
                                                                                   'status':'1',
                                                                                    'finished-replay':'0',
