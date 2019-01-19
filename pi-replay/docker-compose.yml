@@ -2,8 +2,7 @@ version: '3'
 
 services:
   replay:
-    build:
-      context: ./replay
+    image: ajspeck/pireplay:pidocker
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - ./videos:/videos
@@ -29,9 +28,9 @@ services:
       - "traefik.frontend.headers.SSLRedirect=true"
     environment:
       - CAMERA=pi
+      - PYTHONUNBUFFERED=y
   videos:
-    build:
-      context: ./nginx-autoindex
+    image: ajspeck/nginx-autoindex:pidocker
     networks:
       - web
     volumes:
@@ -52,3 +51,4 @@ services:
 networks:
    web:
       external: true
+

@@ -19,4 +19,4 @@ RUN mkdir /install \
     && rm -r /install
 WORKDIR /app
 EXPOSE 8000
-CMD gunicorn --threads 5 --workers 1 -b 0.0.0.0:8000 --enable-stdio-inheritance --capture-output --log-level debug app:app
+CMD gunicorn --threads 5 --workers 1 -b 0.0.0.0:8000 --enable-stdio-inheritance --capture-output --timeout 90 --log-level debug app:app

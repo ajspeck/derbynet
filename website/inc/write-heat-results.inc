@@ -70,8 +70,8 @@ function write_heat_results() {
                                  ':place' => $content['finishplace'],
                                  ':resultid' => $content['resultid']));
     }
-    $min_finish = min(array_column($content, 'finishtime'));
-    $max_finish = max(array_column($content, 'finishtime'));
+    $min_finish = min(array_column($all_times, 'finishtime'));
+    $max_finish = max(array_column($all_times, 'finishtime'));
     write_raceinfo('delta_finish',$max_finish-$min_finish);
     return true;
   }
