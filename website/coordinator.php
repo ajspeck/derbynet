@@ -141,16 +141,20 @@ require_permission(SET_UP_PERMISSION);  // TODO: What's the correct permission?
     <!-- TODO MacReplay only accepts integral skipback values presently -->
     <!-- TODO When displaying this modal, should read the current settings and populate controls accordingly. -->
     <select id="replay-skipback" name="replay-skipback">
+        <option value="0">0.0</option>
+        <option value="0.5">0.5</option>
+        <option selected="selected" value="1">1.0</option>
+        <option value="1.5">1.5</option>
         <option value="2">2.0</option>
-        <!-- <option>2.5</option> -->
+        <option value="2.5">2.5</option>
         <option value="3">3.0</option>
-        <!-- <option>3.5</option> -->
-        <option selected="selected" value="4">4.0</option>
-        <!-- <option>4.5</option> -->
+        <option value="3.5">3.5</option>
+        <option value="4">4.0</option>
+        <option value="4.5">4.5</option>
         <option value="5">5.0</option>
-        <!-- <option>5.5</option> -->
+        <option value="5.5">5.5</option>
         <option value="6">6.0</option>
-        <!-- <option>6.5</option> -->
+        <option value="6.5">6.5</option>
     </select>
 
     <label for="replay-num-showings">Number of times to show replay:</label>

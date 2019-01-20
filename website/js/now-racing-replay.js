@@ -23,7 +23,7 @@ var Overlay = {
         'z-index': 11000,
         'left' : '50%',
         'margin-left': '-256px',
-        'top': $(window).height() / 4 + "px",
+        'top': $(window).height() / 2 + "px",
         'margin-top': '-256px'
       });
       overlay.fadeTo(200, 1);
