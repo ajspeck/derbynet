@@ -96,10 +96,10 @@ var Lineup = {
       var new_replay_url = replay_info.getAttribute('url');
       var replay_rate = replay_info.getAttribute('rate');
       $('#replay-video').playbackRate=replay_rate;
-      if (new_replay_url != $('#replay-video').src) {
-        $('#replay-video').src = new_replay_url;
+      if (new_replay_url != $('#replay-video')[0].src) {
+        $('#replay-video')[0].src = new_replay_url;
         this.replay_times=0;
-        $('#replay-video').play();
+        $('#replay-video')[0].play();
       }
       var new_roundid = current.getAttribute("roundid");
       var new_heat = current.getAttribute("heat");
