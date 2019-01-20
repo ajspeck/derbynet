@@ -65,6 +65,14 @@ $(function () {
 ?>
 
 </table>
+<div class="replay-video-div">
+<video height="100%" id="replay-video" muted>
+<?php
+      echo '<source id="replay-video-src" src="'.read_raceinfo('replay-video-url','').'">'."\n";
+?>
+Your browser does not support the video tag.
+</video>
+</div>
 <?php
   for ($i = 1; $i <= $nlanes; ++$i) {
       echo '<div id="place'.$i.'" class="flying"><span>'.$i.'</span></div>'."\n";
@@ -80,14 +88,6 @@ $(function () {
 <div id="timer_overlay" class="overlay_foreground">
 <img src="img/timer-red.png"/>
 <p>Check timer.</p>
-</div>
-<div class="replay-video-div">
-<video height="100%" id="replay-video" muted>
-<?php
-      echo '<source id="replay-video-src" src="'.read_raceinfo('replay-video-url','').'">'."\n";
-?>
-Your browser does not support the video tag.
-</video>
 </div>
 </body>
 </html>
