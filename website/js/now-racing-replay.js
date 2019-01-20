@@ -100,9 +100,10 @@ var Lineup = {
         $('#replay-video-src')[0].src = new_replay_url;
         this.replay_times=0;
         $('#replay-video')[0].load();
-        $('video').on('ended',function(){
-          this.replay_times+=1;
-          if (this.replay_times<this.replay_max_times)
+        $('#replay-video').on('ended',function(){
+          var that = this
+          that.replay_times+=1;
+          if (that.replay_times<=that.replay_max_times)
           {
             $('#replay-video')[0].play();
           }
