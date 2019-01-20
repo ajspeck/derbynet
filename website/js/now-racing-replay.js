@@ -98,6 +98,7 @@ var Lineup = {
       $('#replay-video-src')[0].src = new_replay_url;
       this.replay_times=0;
       $('#replay-video')[0].load();
+      $('#replay-video').off('ended');
       $('#replay-video').on('ended',$.proxy(function(){
         this.replay_times+=1;
         if (this.replay_times<this.replay_max_times)
