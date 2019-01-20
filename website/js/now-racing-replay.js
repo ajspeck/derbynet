@@ -101,8 +101,8 @@ var Lineup = {
         this.replay_times=0;
         $('#replay-video')[0].load();
         $('#replay-video').on('ended',$.proxy(function(){
-          that.replay_times+=1;
-          if (that.replay_times<=that.replay_max_times)
+          this.replay_times+=1;
+          if (this.replay_times<=this.replay_max_times)
           {
             $('#replay-video')[0].play();
           }
