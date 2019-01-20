@@ -102,7 +102,7 @@ var Lineup = {
         $('#replay-video')[0].load();
         $('#replay-video').on('ended',$.proxy(function(){
           this.replay_times+=1;
-          if (this.replay_times<=this.replay_max_times)
+          if (this.replay_times<this.replay_max_times)
           {
             $('#replay-video')[0].play();
           }
