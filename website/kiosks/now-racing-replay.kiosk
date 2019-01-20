@@ -82,6 +82,7 @@ $(function () {
 </div>
 <div class="replay-video-div">
 <video height="100%" id="replay-video">
+    <source url="">
 Your browser does not support the video tag.
 </video>
 </div>
