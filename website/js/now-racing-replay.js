@@ -49,6 +49,11 @@ var Lineup = {
   // timestamp in milliseconds.
   hold_display_until: 0,
 
+  // hold information about replay
+  replay_video: '',
+  replay_times: 2,
+  replay_max_times:2,
+
   // After an animation of heat results, hold the display for a few seconds
   // before advancing to the next heat.
   hold_display: function() {
@@ -56,7 +61,7 @@ var Lineup = {
   },
 
   ok_to_change: function() {
-    return (new Date()).valueOf() > this.hold_display_until;
+    return ((new Date()).valueOf() > this.hold_display_until)&&(this.replay_times>=this.replay_max_times);
   },
 
   // When the current heat differs from what we're presently displaying,
@@ -87,6 +92,15 @@ var Lineup = {
     }
 
     if (this.ok_to_change()) {
+      var replay_info = now_racing.getElementsByTagName("replay")[0];
+      var new_replay_url = replay_info.getAttribute('url');
+      var replay_rate = replay_info.getAttribute('rate');
+      $('#replay-video').playbackRate=replay_rate;
+      if (new_replay_url != $('#replay-video').src) {
+        $('#replay-video').src = new_replay_url;
+        this.replay_times=0;
+        $('#replay-video').play();
+      }
       var new_roundid = current.getAttribute("roundid");
       var new_heat = current.getAttribute("heat");
       var is_new_heat = new_roundid != this.roundid || new_heat != this.heat
@@ -155,6 +169,7 @@ var Lineup = {
           }
         }
       }
+
     }
 
     // NOTE Any failure to get here will cause the page to get stuck.
@@ -393,3 +408,4 @@ $(function () {
   // Run the watchdog every couple seconds
   setInterval(function() { Poller.watchdog(); }, 2000);
 });
+
