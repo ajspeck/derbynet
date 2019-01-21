@@ -17,7 +17,7 @@ import subprocess
 qCmd = queue.Queue()
 qResp = queue.Queue()
 ReplayData = collections.namedtuple('ReplayData', ['CMD', 'DATA'])
-fps=60
+fps=30
 
 def replay_response_thread(qCmd,qResp,ReplayData):
     s = requests.Session()

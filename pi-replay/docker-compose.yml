@@ -17,7 +17,7 @@ services:
     labels:
       - "traefik.backend=replay"
       - "traefik.docker.network=web"
-      - "traefik.frontend.rule=PathPrefix: /"
+      - "traefik.frontend.rule=PathPrefix:/"
       - "traefik.enable=true"
       - "traefik.port=8000"
       - "traefik.frontend.redirect.entryPoint=https"
