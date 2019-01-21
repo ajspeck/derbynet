@@ -94,7 +94,7 @@ var Lineup = {
     var new_replay_url = replay_info.getAttribute('url');
     var replay_rate = replay_info.getAttribute('rate');
     $('#replay-video')[0].playbackRate=replay_rate;
-    if (new_replay_url != $('#replay-video-src')[0].src) {
+    if ((new_replay_url) && (new_replay_url != $('#replay-video-src')[0].src)) {
       $('#replay-video-src')[0].src = new_replay_url;
       this.replay_times=0;
       $('#replay-video')[0].load();
