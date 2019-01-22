@@ -52,6 +52,8 @@ BROWSER=epiphany
 test -x /usr/bin/midori && BROWSER=midori
 test -x /usr/bin/chromium && BROWSER=/chromium
 test -x /usr/bin/chromium-browser && BROWSER=chromium-browser
+test -x /usr/bin/firefox && BROWSER=firefox
+#test -x /usr/bin/vivaldi && BROWSER=vivaldi
 
 test -f /etc/derbynet.conf  && . /etc/derbynet.conf
 test -f /boot/derbynet.conf && . /boot/derbynet.conf
@@ -109,6 +111,20 @@ while true ; do
                    --disable-infobars \
                    --kiosk "$DERBYNET_SERVER/kiosk.php?address=$ADDRESS" \
                    –incognito
+    elif [ "$BROWSER" = "vivaldi" ] ; then
+        "$BROWSER" --noerrdialogs \
+                   --no-default-browser-check \
+                   --disable-session-crashed-bubble \
+                   --disable-infobars \
+                   --kiosk "$DERBYNET_SERVER/kiosk.php?address=$ADDRESS" \
+                   –incognito
+
+    elif [ "$BROWSER" = "firefox" ] ; then
+        # If xautomation is present, use xte to put the browser into fullscreen mode.
+        # The sleep is to allow the browser to get set up.
+        sleep 10
+        test -x /usr/bin/xte && xte 'sleep 30' 'key F11' &
+	"$BROWSER" "$DERBYNET_SERVER/kiosk.php?address=$ADDRESS"
     else
         # Arbitrary browser command:
         "$BROWSER" "$DERBYNET_SERVER/kiosk.php?address=$ADDRESS"
