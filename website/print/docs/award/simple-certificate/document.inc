@@ -24,8 +24,6 @@ class SimpleAwardDocument extends PrintableAwardDocument {
   function StartDocument() {
     $this->initialize_pdf('L', 'in', 'Letter');
     $this->initialize_layout(10.0, 7.5);
-//    $this->layout->SetHorizontalGap(0.1);
-//    $this->layout->SetVerticalGap(0.1);
   }
 
   // $award argument contains these keys:
@@ -39,25 +37,18 @@ class SimpleAwardDocument extends PrintableAwardDocument {
   // carnumber, firstname, lastname, carname, class, rank, imagefile, carphoto
   //
   function DrawOneAt($left, $top, &$award) {
-    $cx = $left + 5.0;
-    $cy = $top + 3.75;
+    $params = $this->layout->GetParameters()['doc'];
+    $cx = $left + $params['width']/2;
+    $cy = $top + $params['height']/2;
 
     $this->pdf->AddFont('BlackChancery', '', 'black-chancery.php');
 
     $this->pdf->SetLineWidth(0.05);
-    if (true) {  // Rounded rects
-      $this->pdf->SetDrawColor(2, 56, 130);  // blue
-      $this->pdf->RoundedRect($left + 0.125, $top + 0.125, 9.75, 7.25, 0.125);
-      $this->pdf->RoundedRect($left, $top, 10.0, 7.5, 0.25);
-      $this->pdf->SetDrawColor(247, 209, 23);  // gold
-      $this->pdf->RoundedRect($left + 0.0625, $top + 0.0625, 9.875, 7.375, 0.1875);
-    } else {
-      $this->pdf->SetDrawColor(2, 56, 130);  // blue
-      $this->pdf->Rect($left + 0.125, $top + 0.125, 9.75, 7.25);
-      $this->pdf->Rect($left, $top, 10.0, 7.5);
-      $this->pdf->SetDrawColor(247, 209, 23);  // gold
-      $this->pdf->Rect($left + 0.0625, $top + 0.0625, 9.875, 7.375);
-    }
+    $this->pdf->SetDrawColor(2, 56, 130);  // blue
+    $this->pdf->RoundedRect($left + 0.125, $top + 0.125, 9.75, 7.25, 0.125);
+    $this->pdf->RoundedRect($left, $top, 10.0, 7.5, 0.25);
+    $this->pdf->SetDrawColor(247, 209, 23);  // gold
+    $this->pdf->RoundedRect($left + 0.0625, $top + 0.0625, 9.875, 7.375, 0.1875);
 
     $this->pdf->Image(dirname(__FILE__).'/rachel-davis-logo.png',
                       $cx - 3.0/2, $top + 0.200, 3.0);
@@ -77,20 +68,25 @@ class SimpleAwardDocument extends PrintableAwardDocument {
       $this->pdf->Line($cx - 3.0, $cy, $cx + 3.0, $cy);
     }
 
-    // TODO Car number?  Car name?
-
     $this->pdf->SetFont('Times', '', 15);
     $this->pdf->SetLineWidth(0.01);
     $this->pdf->SetDrawColor(0);
 
     // Signature lines:
+    $sig_width = 3.0;   // Length of each signature line
+    $sig_margin = 0.1875;  // Margin from signature line to the nearest horizontal edge
+    
     if ($this->get_option('signatory1')) {
-      $this->pdf->CenteredSequence($left + 0.1875 + 1.5, $top + 6.0, array($this->get_option('signatory1')));
-      $this->pdf->Line($left + 0.1875, $top + 6.5, $left + 0.1875 + 3.0, $top + 6.5);
+      $this->pdf->CenteredSequence($left + $sig_margin + $sig_width / 2, $top + 6.0,
+                                   array($this->get_option('signatory1')));
+      $this->pdf->Line($left + $sig_margin, $top + 6.5,
+                       $left + $sig_margin + $sig_width, $top + 6.5);
     }
     if ($this->get_option('signatory2')) {
-      $this->pdf->CenteredSequence($left + 10.0 - 0.1875 - 1.5, $top + 6.0, array($this->get_option('signatory2')));
-      $this->pdf->Line($left + 10.0 - 0.1875 - 3.0, $top + 6.5, $left + 10.0 - 0.1875, $top + 6.5);
+      $this->pdf->CenteredSequence($left + $params['width'] - $sig_margin - $sig_width/2, $top + 6.0,
+                                   array($this->get_option('signatory2')));
+      $this->pdf->Line($left + $params['width'] - $sig_margin - $sig_width, $top + 6.5,
+                       $left + $params['width'] - $sig_margin,              $top + 6.5);
     }
 
     // Event Title
