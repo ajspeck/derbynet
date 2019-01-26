@@ -98,6 +98,7 @@ public class FastTrackDevice extends TimerDeviceCommon {
     String s;
     while ((s = portWrapper.next(deadline)) != null) {
       if (s.indexOf("Micro Wizard") >= 0) {
+        timerIdentifier = s;
         s = portWrapper.next(deadline);
         if (s.startsWith("K")) {
           // Clean up the timer state and capture some details into the log
@@ -129,6 +130,11 @@ public class FastTrackDevice extends TimerDeviceCommon {
         }
       }
     });
+
+    // Unlike some timers, the FastTrack timers don't reset their display when
+    // a lane mask is sent, so there's no need to wait after a heat-ready
+    // message is received.
+    setPostRaceDisplayDurationMillis(0);
   }
 
   @Override

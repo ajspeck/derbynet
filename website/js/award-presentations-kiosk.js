@@ -26,7 +26,6 @@ var AwardPoller = {
     if (!award_xml) {
       return false;
     }
-    console.log("Reveal = " + award_xml.getAttribute('reveal'));
     return {key: award_xml.getAttribute('key'),
             reveal: award_xml.getAttribute('reveal') == 'true',
             awardname: award_xml.getAttribute('awardname'),
@@ -94,10 +93,18 @@ var AwardPoller = {
         $("#carphoto img").css('max-height', maxPhotoHeight);
       }
       this.current_award_key = award.key;
+      this.revealed = false;
     }
 
     if (!award.reveal) {
       $(".reveal").hide();
+
+      var video = $("video.confetti");
+      video.hide();
+      video.get(0).pause();
+      video.get(0).currentTime = 0;
+      video.show();
+
       if (g_count == 0) {
         console.log("Hiding!");
         console.log(award);
@@ -105,6 +112,16 @@ var AwardPoller = {
       }
     } else if (!this.revealed) {
       $(".reveal").fadeIn(1000);
+      setTimeout(function() { $("video.confetti").get(0).play(); }, 500);
+      setTimeout(function() {
+        $("video.confetti").fadeOut(
+          500, function() {
+            var video = $("video.confetti");
+            video.get(0).pause();
+            video.get(0).currentTime = 0;
+            video.show();
+          }); },
+                 20500);
     }
     this.revealed = award.reveal;
   }
