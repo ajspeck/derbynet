@@ -7,10 +7,11 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install -
 RUN cd /derbynet && ant dist-nodoc.zip
 RUN mv /*.zip /derbynet.zip
 
-FROM openjdk:8-jre-stretch
+FROM debian:stretch
 
 RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && \ 
     apt-get install -y \
+        openjdk-8-jre-headless \
 	nano \
 	zip unzip \
 	wget \
