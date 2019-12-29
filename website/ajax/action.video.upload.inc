@@ -8,6 +8,7 @@
 // $_FILES['video']['type']
 //
 // $_POST['roundid']
+require_once('inc/photo-config.inc');
 
 start_response();
 
@@ -65,6 +66,7 @@ if (false && !have_permission(PHOTO_UPLOAD_PERMISSION)) {
 
     if (move_uploaded_file($video['tmp_name'], $video_dir.DIRECTORY_SEPARATOR.$video_name)) {
       echo "<success/>\n";
+      write_raceinfo('replay-video-url',video_photo_repository()->lookup(RENDER_ORIGINAL)->render_url($video_name));
     } else {
       echo "<failure code='move_uploaded'>move_uploaded_file failed.";
       if (!is_readable($video_dir)) {

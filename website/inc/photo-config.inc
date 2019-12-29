@@ -42,6 +42,12 @@ function car_photo_directory() {
   }
 }
 
+function video_directory() {
+  // For Windows:
+  // %userprofile%\Documents\Lisano Enterprises\GrandPrix Race Manager\Images
+  // or %userprofile%\My Documents\Lisano Enterprises\GrandPrix Race Manager\Images
+  return read_raceinfo('video-directory');
+}
 // A photo repository refers to a directory on the server where we look for
 // original photos.  We keep separate PhotoRepository objects for racer and car
 // photos, but it's OK for them to refer to the same directory.
@@ -396,6 +402,8 @@ function pseudo_mime_content_type($filename) {
             'mp3' => 'audio/mpeg',
             'qt' => 'video/quicktime',
             'mov' => 'video/quicktime',
+            'mp4' => 'video/mp4',
+            'mkv' => 'video/x-matroska',
 
             // adobe
             'pdf' => 'application/pdf',
@@ -461,11 +469,25 @@ function car_photo_repository() {
   return $car_photo_repository;
 }
 
+function video_photo_repository() {
+  global $video_photo_repository;
+
+  if (!isset($video_photo_repository)) {
+    $video_photo_repository = new PhotoRepository('video', video_photo_repository(), 'video');
+
+    $video_photo_repository->make_render(RENDER_ORIGINAL, 0, 0, '');
+  }
+
+  return $video_photo_repository;
+}
+
 function photo_repository($name) {
   if ($name == 'head') {
     return headshots();
   } else if ($name == 'car') {
     return car_photo_repository();
+  } else if ($name == 'video') {
+    return video_photo_repository();
   // TODO } else {
   }
 }
