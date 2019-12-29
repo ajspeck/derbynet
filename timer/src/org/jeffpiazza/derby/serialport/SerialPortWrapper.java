@@ -72,7 +72,7 @@ public class SerialPortWrapper implements SerialPortEventListener {
   }
 
   // These xxxPortXxx methods are the only ones that interact directly with the
-  // SerialPort member.å
+  // SerialPort member.
   public boolean setPortParams(int baudRate, int dataBits, int stopBits,
                                int parity, boolean setRTS, boolean setDTR)
       throws SerialPortException {
