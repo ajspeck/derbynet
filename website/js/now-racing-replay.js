@@ -1,3 +1,12 @@
+// from https://stackoverflow.com/questions/470832/getting-an-absolute-url-from-a-relative-one-ie6-issue/22918332#22918332
+function canonicalize(url) {
+  var div = document.createElement('div');
+  div.innerHTML = "<a></a>";
+  div.firstChild.href = url; // Ensures that the href is properly escaped
+  div.innerHTML = div.innerHTML; // Run the current innerHTML back through the parser
+  return div.firstChild.href;
+}
+
 var Overlay = {
   overlay_shown: '',
 
@@ -91,7 +100,7 @@ var Lineup = {
       this.previous_heat_results = new_heat_results;
     }
     var replay_info = now_racing.getElementsByTagName("replay")[0];
-    var new_replay_url = replay_info.getAttribute('url');
+    var new_replay_url = canonicalize(replay_info.getAttribute('url'));
     var replay_rate = replay_info.getAttribute('rate');
     $('#replay-video')[0].playbackRate=replay_rate;
     if ((new_replay_url) && (new_replay_url != $('#replay-video-src')[0].src)) {
