@@ -7,8 +7,14 @@ session_start();
 //  ["SCRIPT_NAME"]=> "/derbynet/pack153/2019/render-document.php"
 
 if (isset($_SERVER['DOCUMENT_URI']) && isset($_SERVER['SCRIPT_NAME']) &&
+    (strlen($_SERVER['DOCUMENT_URI']) > strlen($_SERVER['SCRIPT_NAME'])) &&
     substr($_SERVER['DOCUMENT_URI'], 0, strlen($_SERVER['SCRIPT_NAME'])) == $_SERVER['SCRIPT_NAME']) {
   $exploded = explode('/', substr($_SERVER['DOCUMENT_URI'], strlen($_SERVER['SCRIPT_NAME'])));
+} elseif (isset($_SERVER['REQUEST_URI']) && isset($_SERVER['SCRIPT_NAME']) &&
+         (strlen($_SERVER['REQUEST_URI']) > strlen($_SERVER['SCRIPT_NAME'])) &&
+         substr($_SERVER['REQUEST_URI'], 0, strlen($_SERVER['SCRIPT_NAME'])) == $_SERVER['SCRIPT_NAME']) {
+  $url_parts = parse_url($_SERVER['REQUEST_URI']);
+  $exploded = explode('/', substr($url_parts['path'], strlen($_SERVER['SCRIPT_NAME'])));
 } else {
   if (isset($_SERVER['PATH_INFO'])) {
     $path_info = $_SERVER['PATH_INFO'];
