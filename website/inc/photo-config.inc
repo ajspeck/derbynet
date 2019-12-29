@@ -473,7 +473,7 @@ function video_photo_repository() {
   global $video_photo_repository;
 
   if (!isset($video_photo_repository)) {
-    $video_photo_repository = new PhotoRepository('video', video_photo_repository(), 'video');
+    $video_photo_repository = new PhotoRepository('video', video_directory(), 'video');
 
     $video_photo_repository->make_render(RENDER_ORIGINAL, 0, 0, '');
   }
