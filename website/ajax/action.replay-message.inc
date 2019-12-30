@@ -35,7 +35,9 @@ if ($replay['state'] != REPLAY_CONNECTED) {
   echo "<replay-message>HELLO</replay-message>\n";  // TODO
   if (get_racing_state()) { //send updated start if running when replay connects
     $current = get_running_round();
-    send_replay_START($current);
+    echo "<replay-message>"."START ".@$current['class']
+    .'_Round'.@$current['round']
+    .'_Heat'.sprintf("%02d", @$current['heat'])."</replay-message>\n";
   }
 }
 
