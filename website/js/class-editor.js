@@ -30,8 +30,6 @@ function show_add_class_modal() {
     $.ajax(g_action_url,
            {type: 'POST',
             data: $('#add_class_modal form input').not('#aggregate-constituents input').serialize(),
-            cache: false,
-            headers: { "cache-control": "no-cache" },
             success: function (data) {
               reload_class_list();
             }});
@@ -67,8 +65,6 @@ function show_add_aggregate_modal() {
     $.ajax(g_action_url,
            {type: 'POST',
             data: $('#add_class_modal form').serialize(),
-            cache: false,
-            headers: { "cache-control": "no-cache" },
             success: function (data) {
               reload_class_list();
             }});
@@ -141,8 +137,6 @@ function show_edit_one_class_modal(list_item) {
                        ntrophies: $("#edit_class_ntrophies").val(),
                        mincarnumber: $("#class_edit_car_numbering_start").val(),
                        is_aggregate: list_item.children('ul[name="constituents"]').length > 0},
-                cache: false,
-                headers: { "cache-control": "no-cache" },
                 success: function () {
                     reload_class_list();
                 }});
@@ -165,8 +159,6 @@ function handle_delete_class() {
             data: {action: 'class.delete',
                    classid: $("#edit_class_name").attr('data-classid')
                   },
-            cache: false,
-            headers: { "cache-control": "no-cache" },
             success: function(data) {
               repopulate_class_list(data);
             }
@@ -185,8 +177,6 @@ function show_add_rank_modal() {
     $.ajax(g_action_url,
            {type: 'POST',
             data: $("#add_rank_modal form").serialize(),
-            cache: false,
-            headers: { "cache-control": "no-cache" },
             success: function(data) {
               repopulate_class_list(data);
               hide_ranks_except(classid);
@@ -245,8 +235,6 @@ function handle_delete_rank() {
             data: {action: 'rank.delete',
                    rankid: $("#edit_rank_name").attr('data-rankid')
                   },
-            cache: false,
-            headers: { "cache-control": "no-cache" },
             success: function(data) {
               repopulate_class_list(data);
               hide_ranks_except(classid);
@@ -260,8 +248,6 @@ function reload_class_list() {
     $.ajax(g_action_url,
            {type: 'GET',
             data: {query: 'class.list'},
-            cache: false,
-            headers: { "cache-control": "no-cache" },
             success: function(data) {
                 repopulate_class_list(data);
             }});
