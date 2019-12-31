@@ -346,8 +346,6 @@ function handle_reveal1() {
             action: 'standings.reveal',
             expose: '+1'
             },
-          cache: false,
-          headers: { "cache-control": "no-cache" },
           success: function(data) {
             process_standings_reveal_result(data);
           }});
@@ -360,8 +358,6 @@ function handle_reveal_all() {
             action: 'standings.reveal',
             expose: 'all'
             },
-          cache: false,
-          headers: { "cache-control": "no-cache" },
           success: function(data) {
             process_standings_reveal_result(data);
           }});

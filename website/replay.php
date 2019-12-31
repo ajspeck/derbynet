@@ -42,9 +42,13 @@ if ($last === false) {
 
 // Don't force http !
 $kiosk_url = '//'.substr($url, 0, $last + 1).'kiosk.php';
+if (isset($_REQUEST['address'])) {
+  $kiosk_url .= "?address=".$_REQUEST['address'];
+}
 ?>
 <link rel="stylesheet" type="text/css" href="css/replay.css"/>
 <script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/ajax-setup.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.10.4.min.js"></script>
 <script type="text/javascript" src="js/screenfull.min.js"></script>
 <script type="text/javascript" src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
