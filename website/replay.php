@@ -66,6 +66,8 @@ function poll_as_replay() {
     data: {action: 'replay-message',
            status: 0,
            'finished-replay': 0},
+    cache: false,
+    headers: { "cache-control": "no-cache" },
     success: function(data) {
       let msgs = data.getElementsByTagName('replay-message');
       for (let i = 0; i < msgs.length; ++i) {
@@ -198,6 +200,8 @@ function on_replay() {
                    data: form_data,
                    processData: false,
                    contentType: false,
+                   cache: false,
+                   headers: { "cache-control": "no-cache" },
                    success: function(data) {
                      console.log('ajax success');
                      console.log(data);

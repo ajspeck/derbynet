@@ -4,6 +4,7 @@
 // TODO: Permissions?  Presently accepting registration action without authentication.
 
 require_once('inc/replay.inc');
+require_once('inc/racing-state.inc');
 
 start_response(); echo "\n";
 
@@ -32,6 +33,12 @@ $replay = get_replay();
 if ($replay['state'] != REPLAY_CONNECTED) {
   write_raceinfo('replay_state', REPLAY_CONNECTED);
   echo "<replay-message>HELLO</replay-message>\n";  // TODO
+  if (get_racing_state()) { //send updated start if running when replay connects
+    $current = get_running_round();
+    echo "<replay-message>"."START ".@$current['class']
+    .'_Round'.@$current['round']
+    .'_Heat'.sprintf("%02d", @$current['heat'])."</replay-message>\n";
+  }
 }
 
 write_raceinfo('replay_reported', $_POST['status']);
