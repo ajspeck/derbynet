@@ -30,7 +30,8 @@ function drain_queue() {
 
 $replay = get_replay();
 
-if ($replay['state'] != REPLAY_CONNECTED) {
+if (($replay['state'] != REPLAY_CONNECTED)||(!isset($_SESSION['replay-msg-hello']))) {
+  $_SESSION['replay-msg-hello']=1;
   write_raceinfo('replay_state', REPLAY_CONNECTED);
   echo "<replay-message>HELLO</replay-message>\n";  // TODO
   if (get_racing_state()) { //send updated start if running when replay connects
