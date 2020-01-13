@@ -30,6 +30,11 @@ if (have_permission(SET_UP_PERMISSION)) {
         // well-defined to be creating a class without a rank if we're actually
         // using rank names.
         $rankid = find_or_create_rank($classname, $classid);
+        if (schema_version() >= 4) && isset($_POST['mincarnumber']) {
+          $stmt = $db->prepare('UPDATE Ranks SET mincarnumber = :mincarnumber WHERE rankid = :rankid');
+          $stmt->execute(array(':mincardnumber' => $_POST['mincarnumber'],
+                               ':rankid' => $rankid));
+        }
       } else {  // Aggregate class
         $classid = create_class($classname, /*with_first_round=*/false);
         $stmt = $db->prepare('UPDATE Classes'

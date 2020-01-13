@@ -37,7 +37,11 @@ if (have_permission(SET_UP_PERMISSION)) {
         $stmt->execute(array(':nranks' => $nranks,
                              ':rankid' => $rankid));
       }
-
+      if (schema_version() >= 4) && isset($_POST['mincarnumber']) {
+        $stmt = $db->prepare('UPDATE Ranks SET mincarnumber = :mincarnumber WHERE rankid = :rankid');
+        $stmt->execute(array(':mincardnumber' => $_POST['mincarnumber'],
+                             ':rankid' => $rankid));
+      }
       echo "<success/>\n";
       emit_all_classes();
     }
