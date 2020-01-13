@@ -168,7 +168,7 @@ function show_add_rank_modal() {
   var classid = $("#edit_class_name").attr('data-classid');
   $("#add_rank_modal input[name='classid']").val(classid);    
   $("#add_rank_modal input[name='name']").val("");
-
+  $("#add_rank_modal input[name='mincarnumber']").val(0);
   show_tertiary_modal("#add_rank_modal", function() {
     close_add_rank_modal();
     $.ajax(g_action_url,
@@ -192,7 +192,7 @@ function edit_one_rank(who) {
   var list_item = $(who).parent("li");
   $("#edit_rank_name").val(list_item.find('.rank-name').text());
   $("#edit_rank_name").attr('data-rankid', list_item.attr('data-rankid'));
-
+  $("#edit_car_numbering_start").val(list_item.attr('data-mincarnumber'));
   // True if we're the only rank for this class:
   var only_rank = list_item.parent("ul").find("li").length == 1;
   var count = list_item.attr('data-count');
@@ -208,9 +208,14 @@ function show_edit_one_rank_modal(list_item) {
            {type: 'POST',
             data: {action: 'rank.edit',
                    rankid: list_item.attr('data-rankid'),
+<<<<<<< HEAD
                    name: $("#edit_rank_name").val()},
             cache: false,
             headers: { "cache-control": "no-cache" },
+=======
+                   name: $("#edit_rank_name").val(),
+                   mincarnumber: $("#edit_car_numbering_start").val()},
+>>>>>>> origin/carIDassignment
             success: function(data) {
               repopulate_class_list(data);
               hide_ranks_except(classid);
@@ -271,6 +276,7 @@ function populate_rank_list(cl) {
     var rank_li = $("<li class='ui-li-has-alt'"
                     + " data-rankid='" + rank.getAttribute('rankid') + "'"
                     + " data-count='" + rank.getAttribute('count') + "'"
+                    + " data-mincarnumber='" + rank.getAttribute('mincarnumber') + "'"
                     + ">"
                     + "<p class='rank'></p>"
                     + "<a class='ui-btn ui-btn-icon-notext ui-icon-gear' onclick='edit_one_rank(this);'></a>"
@@ -316,6 +322,7 @@ function repopulate_class_list(data) {
       $("<span class='count'></span>").text("(" + cl.getAttribute('count') + ")").appendTo(group_p);
 
       if (use_subgroups()) {
+        $("#starting_car_number_extension").addClass('hidden');
         populate_rank_list(cl);
       }
       var constituents = cl.getElementsByTagName('constituent');
