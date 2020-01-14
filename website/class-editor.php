@@ -91,8 +91,8 @@ make_banner(group_label().' Editor', 'setup.php'); ?>
       <option>10</option>
     </select>
     <h3>&nbsp;</h3>
-    <div id="starting_car_number_extension">
-      <h3>Starting car number:</h3>
+    <div id="add_class_starting_car_number_extension">
+      <h3><?php echo read_raceinfo_boolean('use-subgroups') ? "Starting ".subgroup_label()." car number:" : "Starting car number:" ?></h3>
       <input type="number" id="add_car_numbering_start" name="mincarnumber"
                 value="0"/>
     </div>
@@ -125,9 +125,9 @@ make_banner(group_label().' Editor', 'setup.php'); ?>
       <option>10</option>
     </select>
     <h3>&nbsp;</h3>
-    <div id="starting_car_number_extension">
+    <div id="edit_class_starting_car_number_extension">
       <h3>Starting car number:</h3>
-      <input type="number" id="edit_car_numbering_start" name="mincarnumber"
+      <input type="number" id="class_edit_car_numbering_start" name="mincarnumber"
                 value="0"/>
     </div>
     <div id="completed_rounds_extension">
@@ -176,11 +176,11 @@ make_banner(group_label().' Editor', 'setup.php'); ?>
 </div>
 
 <div id="edit_one_rank_modal" class="modal_dialog hidden block_buttons">
-  <h3>New <?php echo subgroup_label(); ?> Name</h3>
+  <h3><?php echo subgroup_label(); ?> Name</h3>
   <form>
     <input id="edit_rank_name" name="name" type="text"/>
     <h3>Starting car number:</h3>
-    <input type="number" id="edit_car_numbering_start" name="car_numbering_start"
+    <input type="number" id="edit_rank_mincarnumber" name="mincarnumber"
               value="0"/>
     <input type="submit" data-enhanced="true"/>
     <input type="button" value="Cancel" data-enhanced="true"
