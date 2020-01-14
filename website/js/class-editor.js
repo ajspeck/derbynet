@@ -20,7 +20,11 @@ function show_add_class_modal() {
   $("#add_class_modal").removeClass("wide_modal");
   $("#aggregate-only").addClass("hidden");
   $("#add_class_modal input[type='submit']").prop('disabled', false);
-
+  $("#add_class_starting_car_number_extension").removeClass('hidden');
+  if (use_subgroups())
+  {
+    
+  }
   show_secondary_modal("#add_class_modal", function () {
     close_add_class_modal();
     $.ajax(g_action_url,
@@ -47,6 +51,8 @@ function show_add_aggregate_modal() {
   $("#add_class_modal input[name='name']").val("");
   $("#add_class_modal").addClass("wide_modal");
   $("#aggregate-only").removeClass("hidden");
+  $("#edit_class_starting_car_number_extension").addClass('hidden');
+  $("#add_class_starting_car_number_extension").addClass('hidden');
 
   $("#aggregate-constituents input[type='checkbox']")
     .prop('checked', false)
@@ -87,6 +93,7 @@ function edit_one_class(who) {
   
   $("#edit_class_name").val(list_item.find('.class-name').text());
   $("#edit_class_name").attr('data-classid', classid);
+  $("#class_edit_car_numbering_start").val(list_item.attr('data-mincarnumber'));
   var ntrophies = list_item.attr('data-ntrophies');
   $("#edit_class_ntrophies option").prop('selected', false);
   if (ntrophies < 0) {
@@ -99,7 +106,9 @@ function edit_one_class(who) {
   $('#edit_class_ntrophies').selectmenu('refresh')
 
   hide_ranks_except(classid);
-
+  var is_aggregate = list_item.children('ul[name="constituents"]').length > 0;
+  $("#edit_class_starting_car_number_extension").toggleClass('hidden', use_subgroups() || is_aggregate);
+  
   // The "completed rounds" message appears only if there are no native racers,
   // but there are some completed rounds that prevent offering deletion of the
   // class.
@@ -125,7 +134,11 @@ function show_edit_one_class_modal(list_item) {
                 data: {action: 'class.edit',
                        classid: list_item.attr('data-classid'),
                        name: $("#edit_class_name").val(),
-                       ntrophies: $("#edit_class_ntrophies").val()},
+                       ntrophies: $("#edit_class_ntrophies").val(),
+                       mincarnumber: $("#class_edit_car_numbering_start").val(),
+                       is_aggregate: list_item.children('ul[name="constituents"]').length > 0},
+                cache: false,
+                headers: { "cache-control": "no-cache" },
                 success: function () {
                     reload_class_list();
                 }});
@@ -182,7 +195,7 @@ function edit_one_rank(who) {
   var list_item = $(who).parent("li");
   $("#edit_rank_name").val(list_item.find('.rank-name').text());
   $("#edit_rank_name").attr('data-rankid', list_item.attr('data-rankid'));
-  $("#edit_car_numbering_start").val(list_item.attr('data-mincarnumber'));
+  $("#edit_rank_mincarnumber").val(list_item.attr('data-mincarnumber'));
   // True if we're the only rank for this class:
   var only_rank = list_item.parent("ul").find("li").length == 1;
   var count = list_item.attr('data-count');
@@ -199,7 +212,7 @@ function show_edit_one_rank_modal(list_item) {
             data: {action: 'rank.edit',
                    rankid: list_item.attr('data-rankid'),
                    name: $("#edit_rank_name").val(),
-                   mincarnumber: $("#edit_car_numbering_start").val()},
+                   mincarnumber: $("#edit_rank_mincarnumber").val()},
             success: function(data) {
               repopulate_class_list(data);
               hide_ranks_except(classid);
@@ -293,6 +306,7 @@ function repopulate_class_list(data) {
                        + " data-count='" + cl.getAttribute('count') + "'"
                        + " data-nrounds='" + cl.getAttribute('nrounds') + "'"
                        + " data-constituent-of=''"  // Possibly rewritten below
+                       + " data-mincarnumber='0'"  // Possibly rewritten below
                        + ">"
                        + "<p></p>"
                        + "<a class='ui-btn ui-btn-icon-notext ui-icon-gear' onclick='edit_one_class(this);'></a>"
@@ -302,12 +316,19 @@ function repopulate_class_list(data) {
       $("<span class='count'></span>").text("(" + cl.getAttribute('count') + ")").appendTo(group_p);
 
       if (use_subgroups()) {
-        $("#starting_car_number_extension").addClass('hidden');
         populate_rank_list(cl);
+      }
+      else {
+        var classid = cl.getAttribute('classid');
+        var ranks = cl.getElementsByTagName("rank");
+        if (ranks.length > 0) {
+          var rank = ranks[0];
+          group_li.attr('data-mincarnumber', rank.getAttribute('mincarnumber'));
+        }
       }
       var constituents = cl.getElementsByTagName('constituent');
       if (constituents.length > 0) {
-        var constituents_ul = $('<ul data-role="listview" data-inset="true"></ul>').appendTo(group_li);
+        var constituents_ul = $('<ul name="constituents" data-role="listview" data-inset="true"></ul>').appendTo(group_li);
         for (var ii = 0; ii < constituents.length; ++ii) {
           $('<li></li>').text(constituents[ii].getAttribute('name')).appendTo(constituents_ul);
         }
