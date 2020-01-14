@@ -1,7 +1,6 @@
 <?php
 require_once('inc/data.inc');
 require_once('inc/schema_version.inc');
-require_once('inc/events.inc');
 require_once('inc/action-helpers.inc');
 require_once('print/inc/printable_racer_document.inc');
 require_once('fpdf/ext/combined.php');
@@ -31,36 +30,12 @@ if (!is_subclass_of(document_class(), 'PrintableRacerDocument')) {
     $doc->set_options(json_decode($_GET['options'], true));
   }
 
-  $order = '';
-  if (isset($_GET['order']))
-    $order = $_GET['order'];  // Values are: name, class, car
-  if (!$order)
-      $order = 'name';
-
   $doc->StartDocument();
 
-  function order_by($order) {
-    if ($order == 'car')
-      return 'carnumber, lastname, firstname';
-    if ($order == 'class')
-      return 'class_sort, lastname, firstname';
-    if ($order == 'rank')
-      return 'class_sort, rank_sort, lastname, firstname';
-    if ($order == 'checkin')
-      return 'seq DESC';
-    return 'lastname, firstname';
-  }
-
-  $schema_version = schema_version();
   $base_sql = 'SELECT racerid, carnumber, lastname, firstname, carname, '
     .' RegistrationInfo.classid, class, RegistrationInfo.rankid, rank,'
     .' imagefile,'
-    .($schema_version < 2 ? ' \'\' as carphoto' : ' carphoto').','
-    .($schema_version < 2 ? "class" : "Classes.sortorder").' AS class_sort,'
-    .($schema_version < 2 ? "rank" : "Ranks.sortorder").' AS rank_sort,'
-    .' (SELECT MAX(seq) FROM Events'
-    .'  WHERE Events.racerid = RegistrationInfo.racerid'
-    .'    AND Events.action = '.EVENT_CHECKIN.') AS seq'
+    .(schema_version() < 2 ? ' \'\' as carphoto' : ' carphoto')
     .' FROM '.inner_join('RegistrationInfo', 'Classes',
                          'RegistrationInfo.classid = Classes.classid',
                          'Ranks',
@@ -122,7 +97,7 @@ if (!is_subclass_of(document_class(), 'PrintableRacerDocument')) {
       if (isset($_GET['where'])) {
         $sql = $sql.' WHERE '.$_GET['where'];
       }
-      $sql = $sql.' ORDER BY '.order_by($order);
+      $sql = $sql.' ORDER BY lastname, firstname, carnumber';
 
       foreach ($db->query($sql) as $racer) {
         draw_one_racer($racer);
