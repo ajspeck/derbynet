@@ -41,7 +41,8 @@ function all_classes() {
     if ($row['rankid']) {
       $current['ranks'][] = array('rankid' => $row['rankid'],
                                   'name' => $row['rank'],
-                                  'count' => $row['nrank']);
+                                  'count' => $row['nrank'],
+                                  'mincarnumber' => $row['mincarnumber']);
     }
   }
 
