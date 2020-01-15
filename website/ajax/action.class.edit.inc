@@ -5,6 +5,8 @@
 // $_POST['ntrophies']
 
 require_once('inc/classes.inc');
+require_once('inc/newracer.inc');
+require_once('inc/schema_version.inc');
 
 start_response();
 
@@ -15,6 +17,12 @@ if (have_permission(SET_UP_PERMISSION)) {
                          ':name' => trim($_POST['name'])));
     if (isset($_POST['ntrophies'])) {
       update_ntrophies($_POST['classid'], $_POST['ntrophies']);
+    }
+    if ((schema_version() >= 4) && isset($_POST['mincarnumber']) && isset($_POST['is_aggregate']) && !filter_var($_POST['is_aggregate'], FILTER_VALIDATE_BOOLEAN)) {
+      $rankid = find_or_create_rank(trim($_POST['name']), $_POST['classid']);
+      $stmt = $db->prepare('UPDATE Ranks SET mincarnumber = :mincarnumber WHERE rankid = :rankid');
+      $stmt->execute(array(':mincarnumber' => $_POST['mincarnumber'],
+                            ':rankid' => $rankid));
     }
     echo "<success/>\n";
   } else {

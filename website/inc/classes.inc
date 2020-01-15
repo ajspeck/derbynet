@@ -10,6 +10,7 @@ function all_classes() {
   $stmt = $db->prepare('SELECT Classes.classid, class, rankid, rank, '
                        .(schema_version() >= 3 ? 'ntrophies, ' : '-1 as ntrophies, ')
                        .(schema_version() >= 3 ? 'constituents, ' : '\'\' as constituents, ')
+                       .(schema_version() >= 4 ? 'mincarnumber, ' : '0 as mincarnumber, ')
                        .' (SELECT COUNT(*) FROM RegistrationInfo WHERE RegistrationInfo.classid = Classes.classid) AS nclass,'
                        .' (SELECT COUNT(*) FROM RegistrationInfo WHERE RegistrationInfo.rankid = Ranks.rankid) AS nrank,'
                        .' (SELECT COUNT(*) FROM Rounds'
@@ -40,7 +41,8 @@ function all_classes() {
     if ($row['rankid']) {
       $current['ranks'][] = array('rankid' => $row['rankid'],
                                   'name' => $row['rank'],
-                                  'count' => $row['nrank']);
+                                  'count' => $row['nrank'],
+                                  'mincarnumber' => $row['mincarnumber']);
     }
   }
 
