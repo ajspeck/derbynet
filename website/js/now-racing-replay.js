@@ -1,3 +1,12 @@
+// from https://stackoverflow.com/questions/470832/getting-an-absolute-url-from-a-relative-one-ie6-issue/22918332#22918332
+function canonicalize(url) {
+  var div = document.createElement('div');
+  div.innerHTML = "<a></a>";
+  div.firstChild.href = url; // Ensures that the href is properly escaped
+  div.innerHTML = div.innerHTML; // Run the current innerHTML back through the parser
+  return div.firstChild.href;
+}
+
 var Overlay = {
   overlay_shown: '',
 
@@ -49,6 +58,11 @@ var Lineup = {
   // timestamp in milliseconds.
   hold_display_until: 0,
 
+  // hold information about replay
+  replay_video: '',
+  replay_times: 2,
+  replay_max_times:2,
+
   // After an animation of heat results, hold the display for a few seconds
   // before advancing to the next heat.
   hold_display: function() {
@@ -56,7 +70,7 @@ var Lineup = {
   },
 
   ok_to_change: function() {
-    return (new Date()).valueOf() > this.hold_display_until;
+    return ((new Date()).valueOf() > this.hold_display_until)&&(this.replay_times>=this.replay_max_times);
   },
 
   // When the current heat differs from what we're presently displaying,
@@ -85,7 +99,29 @@ var Lineup = {
     if (new_heat_results > this.previous_heat_results) {
       this.previous_heat_results = new_heat_results;
     }
-
+    var replay_info = now_racing.getElementsByTagName("replay")[0];
+    var new_replay_url = canonicalize(replay_info.getAttribute('url'));
+    var replay_rate = replay_info.getAttribute('rate');
+    $('#replay-video')[0].playbackRate=replay_rate;
+    if ((new_replay_url) && (new_replay_url != $('#replay-video-src')[0].src)) {
+      $('#replay-video-src')[0].src = new_replay_url;
+      this.replay_times=0;
+      $('#replay-video')[0].load();
+      $('#replay-video').css('visibility','visible');
+      $('#replay-video').off('ended');
+      $('#replay-video').on('ended',$.proxy(function(){
+        this.replay_times+=1;
+        if (this.replay_times<this.replay_max_times)
+        {
+          $('#replay-video')[0].play();
+        }
+        else
+        {
+          $('#replay-video').css('visibility','hidden');
+        }
+      },this));
+      $('#replay-video')[0].play();
+    }
     if (this.ok_to_change()) {
       var new_roundid = current.getAttribute("roundid");
       var new_heat = current.getAttribute("heat");
@@ -103,7 +139,6 @@ var Lineup = {
       }
 
       var racers = now_racing.getElementsByTagName("racer");
-      var zero = now_racing.getElementsByTagName('zero')[0].getAttribute('zero');
       if (is_new_heat && racers.length > 0) {
         FlyerAnimation.enable_flyers();
         FlyerAnimation.set_number_of_racers(racers.length);
@@ -113,7 +148,7 @@ var Lineup = {
         $('[data-lane] .carnumber').text('');
         $('[data-lane] .photo').empty();
         $('[data-lane] .name').text('');
-        $('[data-lane] .time').css({opacity: 0}).text(zero);
+        $('[data-lane] .time').css({opacity: 0}).text('0.000');
         $('[data-lane] .speed').css({opacity: 0}).text('200.0');
         $('[data-lane] .place span').text('');
         $('[data-lane] img').remove();
@@ -153,11 +188,10 @@ var Lineup = {
             if (r.getAttribute('photo') != $('[data-lane="' + lane + '"] .photo img').attr('src')) {
               $('[data-lane="' + lane + '"] .photo img').attr('src', r.getAttribute('photo'));
             }
-          } else {
-            $('[data-lane="' + lane + '"] .photo').empty();
           }
         }
       }
+
     }
 
     // NOTE Any failure to get here will cause the page to get stuck.
@@ -258,10 +292,6 @@ var Poller = {
   // if no request is queued.
   id_of_timeout: 0,
 
-  // If we're being shown within a replay iframe, suspend polling while a replay
-  // is showing and we're not visible; resume when we have the display again.
-  suspended: false,
-
   // Queues the next poll request when processing of the current request has
   // completed, including animations, if any.  Because animations are handled
   // asynchronously, with completion callbacks, we can't just start the next
@@ -280,8 +310,6 @@ var Poller = {
   poll_for_update: function(roundid, heat) {
     if (typeof(simulated_poll_for_update) == "function") {
       simulated_poll_for_update();
-    } else if (this.suspended) {
-      Poller.queue_next_request(roundid, heat);
     } else {
       var row_height = 0;
       var photo_cells = $('td.photo');
@@ -289,7 +317,7 @@ var Poller = {
 
       if (photo_cells.length > 0) {
         // Position of the first td.photo may get adjusted
-        row_height = Math.floor(($(window).height() - photo_cells.position().top) / photo_cells.length) - border;
+        row_height = Math.floor(($(window).height()/2 - photo_cells.position().top) / photo_cells.length) - border;
       }
 
       this.time_of_last_request = (new Date()).valueOf();
@@ -299,8 +327,6 @@ var Poller = {
                      roundid: roundid,
                      heat: heat,
                      'row-height': row_height},
-              cache: false,
-              headers: { "cache-control": "no-cache" },
               success: function(data) {
                 process_polling_result(data);
               },
@@ -350,7 +376,7 @@ function process_polling_result(now_racing) {
 
       $('[data-lane="' + lane + '"] .time')
         .css({opacity: 100})
-        .text(hr.getAttribute('time'));
+        .text(hr.getAttribute('time').substring(0,5));
       if (FlyerAnimation.ok_to_animate) {
         $('[data-lane="' + lane + '"] .place').css({opacity: 0});
       }
@@ -386,7 +412,7 @@ function resize_table() {
   // the new window size.  We temporarily remove the photos and rely on
   // process_new_heat, above, to repopulate with different-sized photos.
   $("table td.photo").empty();
-  $("table").css({height: $(window).height() - 60});
+  $("table").css({height: $(window).height()/2 - 60});
 
   var place = $('[data-lane="1"] .place');
   var btop = parseInt(place.css('border-top'));
@@ -396,24 +422,12 @@ function resize_table() {
   FontAdjuster.table_resized();
 }
 
-function on_message(msg) {
-  if (msg == 'replay-started') {
-    Poller.suspended = true;
-    Lineup.hold_display();
-  } else if (msg == 'replay-ended') {
-    Poller.suspended = false;
-    FlyerAnimation.enable_flyers();
-  }
-}
-
 $(function () {
   resize_table();
   $(window).resize(function() { resize_table(); });
-
-  window.onmessage = function(e) { on_message(e.data); };
-
   // This 1-second delay is to let the initial resizing take effect
   setTimeout(function() { Poller.poll_for_update(0, 0); }, 1000);
   // Run the watchdog every couple seconds
   setInterval(function() { Poller.watchdog(); }, 2000);
 });
+

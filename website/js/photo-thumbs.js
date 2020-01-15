@@ -198,6 +198,8 @@ function cropPhoto() {
                    original_height: $('#work_image img').height(),
                    original_width: $('#work_image img').width()
                   },
+            cache: false,
+            headers: { "cache-control": "no-cache" },
             success: function(data) {
               var breaker = data.getElementsByTagName('cache_breaker');
               if (breaker) {
@@ -217,6 +219,8 @@ function rotatePhoto(angle) {
                  repo: photo_data.repo,
                  image_name: photo_data.basename,
                  rotation: angle},
+          cache: false,
+          headers: { "cache-control": "no-cache" },
           success: function(data) {
             var breaker = data.getElementsByTagName('cache_breaker');
             if (breaker) {
@@ -226,6 +230,22 @@ function rotatePhoto(angle) {
             }
           }
          });
+}
+
+function on_delete_photo_button() {
+  var photo_data = $("#work_image").data('photo');
+  show_secondary_modal("#delete_confirmation_modal", function(event) {
+    close_secondary_modal("#delete_confirmation_modal");
+    $.ajax(g_action_url,
+           {type: 'POST',
+            data: {action: 'photo.delete',
+                   repo: photo_data.repo,
+                   photo: photo_data.basename},
+            success: function (data) {
+              location.reload(true);
+            }});
+    close_modal('#photo_crop_modal');
+  });
 }
 
 
