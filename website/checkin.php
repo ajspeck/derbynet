@@ -167,14 +167,6 @@ foreach ($stmt as $rs) {
   <label for="edit_lastname">Last name:</label>
   <input id="edit_lastname" type="text" name="edit_lastname" value=""/>
 
-  <label for="edit_carno">Car number:</label>
-  <input id="edit_carno" type="text" name="edit_carno" value=""/>
-  <br/>
-
-  <label for="edit_carname">Car name:</label>
-  <input id="edit_carname" type="text" name="edit_carname" value=""/>
-  <br/>
-
 <?php
 // $rank_options is a string of <option> elements, one per rank.
 //    $rank_options is used to pick a rank for a new or modified racer.
@@ -227,6 +219,15 @@ foreach ($stmt as $rs) {
     <select id="edit_rank"><?php echo $rank_options; ?>
     </select>
   <br/>
+
+  <label for="edit_carno">Car number:</label>
+  <input id="edit_carno" type="text" name="edit_carno" value=""/>
+  <br/>
+
+  <label for="edit_carname">Car name:</label>
+  <input id="edit_carname" type="text" name="edit_carname" value=""/>
+  <br/>
+  
   <label for="eligible">Trophy eligibility:</label>
     <input type="checkbox" data-role="flipswitch" name="eligible" id="eligible"
             data-wrapper-class="trophy-eligible-flipswitch"
