@@ -12,6 +12,12 @@
 	      value="\Program Files (x86)\LibreOffice 5\program\soffice.exe">
      <os family="windows"/>
    </condition>
+
+   <condition property="soffice"
+              value="/usr/bin/soffice">
+     <os family="unix"/>
+   </condition>
+
    <property name="soffice"
 	     location="/Applications/LibreOffice.app/Contents/MacOS/soffice"/>
    <condition property="is_windows">
