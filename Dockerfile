@@ -85,22 +85,22 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update \
               unzip
 
 
-RUN mv /tmp/derbynet/website /var/www/html/derbynet
-RUN mkdir -p /usr/share/derbynet/
-RUN mv /tmp/derbynet/extras /usr/share/derbynet/
-RUN mv /tmp/derbynet/derby-timer.jar /usr/bin/
+RUN mv /tmp/derbynet/website /var/www/html/derbynet && \
+	mkdir -p /usr/share/derbynet/ && \
+	mv /tmp/derbynet/extras /usr/share/derbynet/ && \
+	mv /tmp/derbynet/derby-timer.jar /usr/bin/
 COPY ./docker/location.snippet /etc/nginx/derbynet/location.snippet
 COPY ./docker/index.html /var/www/html/index.html
 COPY ./extras/conf/derbynet.conf /etc/derbynet.conf
 COPY ./docker/timer-start.sh /timer-start.sh
-RUN chmod +x /timer-start.sh
-RUN ln -sf /dev/stdout /var/log/nginx/access.log \
-	&& ln -sf /dev/stderr /var/log/nginx/error.log
-	
-RUN sed -i "s/worker_processes auto;/worker_processes 1;/g" /etc/nginx/nginx.conf
-RUN mkdir -m 777 /var/lib/derbynet
-RUN chown www-data.www-data /var/lib/derbynet
-RUN mkdir -m 777 /var/www/html/derbynet/local
+RUN chmod +x /timer-start.sh && \
+    ln -sf /dev/stdout /var/log/nginx/access.log && \
+	ln -sf /dev/stderr /var/log/nginx/error.log && \
+	sed -i "s/worker_processes auto;/worker_processes 1;/g" /etc/nginx/nginx.conf && \
+    mkdir -m 777 /var/lib/derbynet && \
+    chown www-data.www-data /var/lib/derbynet && \
+	mkdir -m 777 /var/www/html/derbynet/local
+
 COPY ./docker/default-file-path.inc /var/www/html/derbynet/local/default-file-path.inc
 RUN sed -i -e '/^[ \t]*location \/ {/ i\ include derbynet/location.snippet;' /etc/nginx/sites-available/default
 VOLUME /var/lib/derbynet/
