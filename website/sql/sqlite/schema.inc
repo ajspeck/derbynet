@@ -103,6 +103,7 @@ make_index("RaceInfo", "itemkey"),
 ."  `rank` VARCHAR(15) NOT NULL COLLATE NOCASE, "
 ."  `classid` INTEGER NOT NULL"
 .(expected_schema_version() < 2 ? "" : ",  `sortorder` INTEGER ")
+.(expected_schema_version() < 4 ? "" : ",  `mincarnumber` INTEGER DEFAULT 0 NOT NULL ")
 .")",
 make_index("Ranks", "classid"),
 make_index("Ranks", "rank"),

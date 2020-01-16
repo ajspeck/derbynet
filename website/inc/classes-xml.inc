@@ -17,6 +17,7 @@ function emit_all_classes() {
     foreach ($class['ranks'] as $rank) {
       echo '  <rank rankid="'.$rank['rankid'].'"'
           .' count="'.$rank['count'].'"'
+          .' mincarnumber="'.$rank['mincarnumber'].'"'
           .' name="'.htmlspecialchars($rank['name'], ENT_QUOTES, 'UTF-8').'"/>'."\n";
     }
     if (!empty($class['constituents'])) {

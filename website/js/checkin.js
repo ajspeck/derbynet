@@ -80,7 +80,7 @@ function show_edit_racer_form(racerid) {
 
   $("#edit_carno").val(car_no);
   $("#edit_carname").val(car_name);
-
+  $("#edit_rank").unbind("change",handle_edit_rank_change);
   var edit_rank = $("#edit_rank");
   edit_rank.val(rankid);
   // I think it's a bug in jquery-mobile that an explicit change
@@ -116,11 +116,30 @@ function show_new_racer_form() {
   $("#eligible").trigger("change", true);
 
   $("#delete_racer_extension").addClass('hidden');
-  
+  $("#edit_rank").on("change", handle_edit_rank_change);
+  handle_edit_rank_change(null);
   show_modal("#edit_racer_modal", function(event) {
       handle_edit_racer();
       return false;
   });
+}
+
+function handle_edit_rank_change(event)
+{
+  $.ajax("action.php",
+         {type: 'GET',
+          data: {query: "racer.nextcar",
+                 rankid: $("#edit_rank").val()},
+          success: function(data) {
+            process_receive_suggested_car_number(data);
+          },
+         });
+}
+
+function process_receive_suggested_car_number(data)
+{
+  var carnumber = data.documentElement.getAttribute('nextcarnumber');
+  $("#edit_carno").val(carnumber);
 }
 
 function handle_edit_racer() {

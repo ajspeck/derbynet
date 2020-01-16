@@ -39,5 +39,11 @@ if (schema_version() < 3) {
   $updates[] = "INSERT INTO RaceInfo(itemkey, itemvalue) VALUES('schema', '3')";
 }
 
+if (schema_version() < 4) {
+  $updates[] = "ALTER TABLE Ranks ADD COLUMN mincarnumber INTEGER DEFAULT 0 NOT NULL";
+  $updates[] = "DELETE FROM RaceInfo WHERE itemkey = 'schema'";
+  $updates[] = "INSERT INTO RaceInfo(itemkey, itemvalue) VALUES('schema', '4')";
+}
+
 return $updates;
 ?>
