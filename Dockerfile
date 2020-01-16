@@ -91,7 +91,7 @@ RUN mv /tmp/derbynet/website /var/www/html/derbynet && \
 	mv /tmp/derbynet/derby-timer.jar /usr/bin/
 COPY ./docker/location.snippet /etc/nginx/derbynet/location.snippet
 COPY ./docker/index.html /var/www/html/index.html
-COPY ./extras/conf/derbynet.conf /etc/derbynet.conf
+COPY ./extras/derbynet.conf /etc/derbynet.conf
 COPY ./docker/timer-start.sh /timer-start.sh
 RUN chmod +x /timer-start.sh && \
     ln -sf /dev/stdout /var/log/nginx/access.log && \
