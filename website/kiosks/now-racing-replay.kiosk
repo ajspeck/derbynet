@@ -1,93 +1,15 @@
-<?php @session_start();
-$nlanes = get_lane_count();
-$use_points = read_raceinfo_boolean('use-points');
-require_once('inc/data.inc');
-require_once('inc/banner.inc');
-?><!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <script type="text/javascript" src="js/jquery.js"></script>
-<?php require('inc/kiosk-poller.inc'); ?>
 <title>Derby Racing Main Board</title>
 <link rel="stylesheet" type="text/css" href="css/global.css"/>
 <link rel="stylesheet" type="text/css" href="css/kiosks.css"/>
-<link rel="stylesheet" type="text/css" href="css/now-racing.css"/>
-<link rel="stylesheet" type="text/css" href="css/now-racing-replay-video.css"/>
-<script type="text/javascript" src="js/jquery-ui-1.10.4.min.js"></script>
-<script type="text/javascript" src="js/now-racing-replay.js"></script>
-<script type="text/javascript" src="js/now-racing-adjust-fonts-replay.js"></script>
-<?php if (@$simulated_polling_url) { ?>
-<script type="text/javascript" src="<?php echo @$simulated_polling_url; ?>"></script>
-<?php } ?>
-<?php // If $nlanes not yet set, then this page isn't ready for display.
-    if ($nlanes <= 0) {
-?><script type="text/javascript">
-$(function () {
-    setTimeout(function() {
-        console.log("Reloading because nlanes not set yet.");
-        location.reload(true);
-      },
-      5000);
-  });
-</script>
-<?php }  // if ($nlanes <= 0)
-?>
+<link rel="stylesheet" type="text/css" href="css/now-racing-replay.css"/>
 </head>
 <body>
-<?php make_banner('Racing', /* back_button */ false); ?>
-<?php if ($nlanes > 0) { ?>
-<table id="main-table">
-<tr id="table-headers">
-    <th>Lane</th>
-    <th>Car</th>
-    <th colspan="2">Racer</th>
-<?php if (!$use_points) { ?>
-    <th>Time</th>
-    <th><div id="speed-div">Speed <span class="aside">(scale MPH)</span></div></th>
-<?php } ?>
-    <th>Place</th>
-</tr>
-
-<?php
-  for ($i = 1; $i <= $nlanes; ++$i) {
-      echo '<tr data-lane="'.$i.'"><td class="lane">'.$i.'</td>'
-          .'<td class="carnumber"></td>'
-          .'<td class="photo"></td>'
-          .'<td class="name"></td>';
-      if (!$use_points) {
-        echo '<td class="time"></td>'
-            .'<td class="speed"></td>';
-      }
-      echo '<td class="place"><span class="sp"/></td>'
-          .'</tr>'."\n";
-  }
-?>
-
-</table>
-<div class="replay-video-div">
-<video height="100%" id="replay-video" style="display:block; margin: 0 auto; visibility:hidden" muted>
-<?php
-      echo '<source id="replay-video-src" src="'.read_raceinfo('replay-video-url','').'">'."\n";
-?>
-Your browser does not support the video tag.
-</video>
-</div>
-<?php
-  for ($i = 1; $i <= $nlanes; ++$i) {
-      echo '<div id="place'.$i.'" class="flying"><span>'.$i.'</span></div>'."\n";
-  }
-?>
-<?php } else { ?>
-<h2>Number of lanes not yet recorded...</h2>
-<?php } ?>
-<div id="overlay_background"></div>
-<div id="paused_overlay" class="overlay_foreground">
-<img src="img/pause.png"/>
-</div>
-<div id="timer_overlay" class="overlay_foreground">
-<img src="img/timer-red.png"/>
-<p>Check timer.</p>
-</div>
+<iframe src="kiosk.php?page=kiosks/now-racing.kiosk" class="iframe"></iframe>
+<iframe src="kiosk.php?page=kiosks/replay.kiosk&hide_banner=1" class="iframe"></iframe>
 </body>
 </html>

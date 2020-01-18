@@ -1,0 +1,18 @@
+body {
+    margin: 0;
+}
+
+.iframe {
+    padding: 0;
+    margin: 0;
+    border: none;
+    margin: 0;
+    padding: 0;
+    display: block;
+    width: 100vw;
+    height: 50vh;
+    float: left;
+    &::-webkit-scrollbar { 
+        display: none; 
+    }
+}

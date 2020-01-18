@@ -1,0 +1,38 @@
+<?php @session_start();
+$nlanes = get_lane_count();
+$use_points = read_raceinfo_boolean('use-points');
+require_once('inc/data.inc');
+require_once('inc/banner.inc');
+?><!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<script type="text/javascript" src="js/jquery.js"></script>
+<?php require('inc/kiosk-poller.inc'); ?>
+<title>Derby Racing Main Board</title>
+<link rel="stylesheet" type="text/css" href="css/global.css"/>
+<link rel="stylesheet" type="text/css" href="css/kiosks.css"/>
+<link rel="stylesheet" type="text/css" href="css/replay-kiosk.css"/>
+<script type="text/javascript" src="js/jquery-ui-1.10.4.min.js"></script>
+<script type="text/javascript" src="js/replay-kiosk.js"></script>
+<?php if (@$simulated_polling_url) { ?>
+<script type="text/javascript" src="<?php echo @$simulated_polling_url; ?>"></script>
+<?php } ?>
+</head>
+<body>
+<?php
+if (!isset($_GET['hide_banner']))
+{
+      make_banner('Replay', /* back_button */ false); 
+}
+?>
+<div class="replay-video-div">
+<video height="100%" id="replay-video" style="display:block; margin: 0 auto; visibility:hidden; object-fit: contain;" muted>
+<?php
+      echo '<source id="replay-video-src" src="'.read_raceinfo('replay-video-url','').'">'."\n";
+?>
+Your browser does not support the video tag.
+</video>
+</div>
+</body>
+</html>
