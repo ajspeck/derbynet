@@ -31,7 +31,7 @@ if (isset($_REQUEST['address'])) {
 <script type="text/javascript" src="js/ajax-setup.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.10.4.min.js"></script>
 <script type="text/javascript" src="js/screenfull.min.js"></script>
-<script type="text/javascript" src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<script type="text/javascript" src="js/adapter.js"></script>
 <script type="text/javascript" src="js/message-poller.js"></script>
 <script type="text/javascript" src="js/viewer-signaling.js"></script>
 <script type="text/javascript" src="js/video-capture.js"></script>
@@ -84,6 +84,15 @@ function handle_replay_message(cmdline) {
 $(function() { setInterval(poll_as_replay, 250); });
 
 function on_device_selection(selectq) {
+  stream = document.getElementById("preview").srcObject;
+  
+  // If a stream is already open, stop it.
+  if (stream != null) {
+    stream.getTracks().forEach(function(track) {
+      track.stop();
+    });
+  }	
+	
   let device_id = selectq.find(':selected').val();
   navigator.mediaDevices.getUserMedia({ video: { deviceId: device_id } })
   .then(stream => {
