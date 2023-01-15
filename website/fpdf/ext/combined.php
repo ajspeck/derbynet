@@ -15,6 +15,7 @@ require_once('fpdf/ext/barcode.php');  // PDF_Barcode
 require_once('fpdf/ext/sequencer.php');  // PDF_Sequencer
 require_once('fpdf/ext/rotation_and_centering.php');  // PDF_RotationAndCentering
 require_once('fpdf/ext/ellipse.php');  // PDF_Ellipse
+require_once('fpdf/ext/qrcode/qrcode.class.php'); // php qr code
 
 // We introduce this class to terminate the inheritance chain, so consumers can
 // be isolated from the details.

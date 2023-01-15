@@ -39,7 +39,10 @@ class CheckInCardDocument extends PrintableRacerDocument {
                                  array(new SetFontTag('Times', 'B', 24),
                                        strval($racer['carnumber'])));
 
-    $this->pdf->HorizontalBarcode($x + 0.6875, $y + 1.50, 2.0, 0.20, $racer['barcode']);
+#    $this->pdf->HorizontalBarcode($x + 0.6875, $y + 1.50, 2.0, 0.20, $racer['barcode']);
+    $qrcode = new QRcode($racer['barcode'], 'H');
+    $qrcode->disableBorder();
+    $qrcode->displayFPDF($this->pdf, $x+2.4, $y+1.05, 0.92);
   }
 }
 

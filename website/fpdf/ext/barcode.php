@@ -24,7 +24,7 @@ class PDF_Barcode extends PDF_MemImage {
 
     $x += 10 * $scale;
 
-    for ($i = 0; $i < strlen($code_string); ++$i) {
+    for ($i = 1; $i <= strlen($code_string); $i++) {
       $bar_width = $scale * substr($code_string, $i - 1, 1);
       if ($i % 2 != 0) {
         $this->Rect($x, $y, $bar_width, $h, "F");

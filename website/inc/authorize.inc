@@ -23,6 +23,7 @@ function require_permission($perm) {
 }
 
 function have_permission($perm) {
+  if ($perm == -1) return true;
   return ($_SESSION['permissions'] & $perm) != 0;
 }
 ?>

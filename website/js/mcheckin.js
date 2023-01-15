@@ -9,8 +9,7 @@ $(function() {
   console.log('window.inner', window.innerWidth, window.innerHeight);
 });
 
-var codeReader = new ZXingBrowser.BrowserMultiFormatOneDReader();
-
+var codeReader = new ZXingBrowser.BrowserQRCodeReader();
 // Last scanned barcode value
 var g_barcode;
 
@@ -112,7 +111,7 @@ function on_recognized_barcode(result) {
                                  "  " + racer.carnumber + " " + racer.carname);
             update_thumbnail('head', racer.headshot);
             update_checked_in(racer.passed);
-            update_thumbnail('car',  racer.carphoto);
+            update_thumbnail('car',  racer.car_photo);
             $("#slide-up").animate({height: '110px'});
           }
          });

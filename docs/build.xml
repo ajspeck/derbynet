@@ -13,7 +13,7 @@
      <os family="windows"/>
    </condition>
    <property name="soffice"
-	     location="/Applications/LibreOffice.app/Contents/MacOS/soffice"/>
+	     location="/usr/bin/soffice"/>
    <condition property="is_windows">
      <os family="windows"/>
    </condition>

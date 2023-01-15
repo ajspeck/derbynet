@@ -21,6 +21,14 @@ require_once('inc/authorize.inc');
 <script type="text/javascript" src="js/adapter.js"></script>
 <script type="text/javascript" src="js/video-device-picker.js"></script>
 <script type="text/javascript" src="js/zxing.js"></script>
+<script type="text/javascript" src="js/login.js"></script>
+<?php
+if ((!have_permission(PHOTO_UPLOAD_PERMISSION))||(!have_permission(CHECK_IN_RACERS_PERMISSION))) {
+?>
+<script type="text/javascript" src="js/mcheckin-login.js"></script>
+<?php
+}
+?>
 <script type="text/javascript" src="js/mcheckin.js"></script>
 </head>
 <body>
