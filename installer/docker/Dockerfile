@@ -19,7 +19,6 @@ RUN apk update && \
     apk add php-fpm && \
     apk add php-opcache && \
     apk add php-gd && \
-    apk add php-iconv && \
     apk add php-curl && \
     apk add php-iconv && \
     apk add php-session && \
