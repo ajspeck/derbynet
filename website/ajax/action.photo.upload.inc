@@ -115,21 +115,19 @@ if (!have_permission(PHOTO_UPLOAD_PERMISSION)) {
             widen_and_clip($x, $w, 1.10, imagesx($original));
             $h = $w;
             widen_and_clip($y, $h, 4 / 3, imagesy($original));
-            if (($h <= 0) || ($w <= 0)) {
-                json_out('warning', "Face was too small.");
-            }
-            else
-            {
+
+            if ($w != 0 && $h != 0) {
               $cropped_path = $photo_repository->lookup(RENDER_CROPPED)->target_file_path($target_name);
               $cropped = imagecreatetruecolor($w, $h);
               imagecopy($cropped, $original, 0,0, $x, $y, $w, $h);
               write_image($cropped, $cropped_path, $image_type);
               imagedestroy($cropped);
-
               // Use the cropped path now rather than the original if we record
               // the file name in the database.
               $path_render = $photo_repository->lookup(RENDER_CROPPED);
               json_out('cropped', true);
+            } else {
+              json_out('warning', "Autocrop gave $w width x $h height");
             }
           } else {
             json_out('warning', "No face detected for autocrop.");
