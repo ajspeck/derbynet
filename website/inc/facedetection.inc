@@ -75,6 +75,7 @@ class FaceDetector {
   }
 
   function detect_face1(&$img) {
+    $finish=time()+10;
     if ($this->width != imagesx($img) || $this->height != imagesy($img)) {
       trigger_error("Image is ".imagesx($img)."x".imagesy($img).
                     ", but it's supposed to be ".$this->width."x".$this->height);
@@ -88,6 +89,9 @@ class FaceDetector {
     $initial_scale = min($this->width/$this->window_width, $this->height/$this->window_height);
     
     for ($factor = $initial_scale; $factor >= 1.0; $factor /= $this->scale_factor) {
+      if (time() >= $finish) {
+        return false;
+      }
       $window_width = (0.5 + $factor * $this->window_width)>>0;
       $window_height = (0.5 + $factor * $this->window_height)>>0;
       $window_area = $window_width * $window_height;
