@@ -1,6 +1,6 @@
 ## docker build -t derbynet_server -f installer/docker/Dockerfile .
 
-FROM alpine
+FROM alpine:3.19
 LABEL org.opencontainers.image.authors=jeffpiazza
 LABEL description="DerbyNet is the new standard in race management software for Pinewood Derby events.  \
 Visit http://jeffpiazza.github.io/derbynet/ for more information about DerbyNet."
