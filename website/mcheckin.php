@@ -109,6 +109,10 @@ $(function() {
 </div>
 
 
+<div id="back-bug" class="back_button" onclick="window.location='checkin.php'; return false;">
+    <img src="img/back-button.png"/>
+</div>
+
 <img id="logo-bug" src="img/derbynet.png"/>
 
 </body>

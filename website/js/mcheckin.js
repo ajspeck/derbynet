@@ -368,7 +368,7 @@ function on_switch_to_camera_cllicked() {
   update_thumbnail('head', '');
   update_thumbnail('car', '');
   before_show_slide_in();
-
+  $(".back_button").attr("onclick","window.location='mcheckin.php'; return false;");
   hide_racer_list(function() {
     show_camera();
   });
