@@ -4,6 +4,10 @@
   display: none;
 }
 
+#back-bug {
+  display: none;
+}
+
 #greetings-background {
   z-index: -200;
   position: absolute;
@@ -299,7 +303,15 @@ div#racer-list {
   position: fixed;
   bottom: 1vh;
   right: 1vw;
-  max-height: 7vh;
+  max-height: 4vh;
+}
+
+#back-bug {
+  display: block;
+  position: fixed;
+  bottom: 1vh;
+  right: 5vw;
+  max-height: 4vh;
 }
 
 #slide-in { /* landscape */

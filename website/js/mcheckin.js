@@ -47,6 +47,7 @@ function before_show_slide_in() {
 }
 function show_slide_in(afterfn = false) {
   $("#slide-in").css('display', 'block');
+  $(".back_button").attr("onclick","window.location='mcheckin.php'; return false;");
   if (using_landscape()) {
     $("#controls-inner").css('margin-left', '0px');
     $("#slide-in").animate({width: $("#slide-in-inner").css('width')}, afterfn);
@@ -69,6 +70,8 @@ function hide_slide_in() {
   } else {
     landscape = using_landscape();
   }
+
+  $(".back_button").attr("onclick","window.location='checkin.php'; return false;");
 
   if (landscape) {
     $("#slide-in").animate({width: '0px'},
@@ -372,7 +375,7 @@ function on_switch_to_camera_cllicked() {
   update_thumbnail('head', '');
   update_thumbnail('car', '');
   before_show_slide_in();
-
+  $(".back_button").attr("onclick","window.location='mcheckin.php'; return false;");
   hide_racer_list(function() {
     show_camera();
   });
